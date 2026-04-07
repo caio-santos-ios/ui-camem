@@ -166,7 +166,16 @@ export default function ProfileUserForm({id}: TProp) {
             <Label title="Nome"/>
             <input placeholder="Nome" {...register("name")} type="text" className="input-erp-primary input-erp-default"/>
           </div>
-          <div className="col-span-6 xl:col-span-4">
+          <div className="col-span-6 xl:col-span-1">
+            <Label title="Role"/>
+            <select {...register("role")} className="h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 text-sm dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 text-gray-800">
+              <option value="Student">Student</option>
+              <option value="Teacher">Teacher</option>
+              <option value="Coordinator">Coordinator</option>
+              <option value="Director">Director</option>
+            </select>
+          </div>
+          <div className="col-span-6 xl:col-span-3">
             <Label title="Descrição" required={false}/>
             <input placeholder="Descrição" {...register("description")} type="text" className="input-erp-primary input-erp-default"/>
           </div>

@@ -1,21 +1,23 @@
 export type TSignUp = {
-    companyName: string,
     name: string,
     email: string;
-    phone: string;
-    whatsapp: string;
+    role: "Student" | "Teacher" | "Director" | "Coordinator";
+    ra: string;
     password: string;
-    document: string;
+    cpf: string;
     privacyPolicy: boolean;
+    typeAccess: boolean; // "CPF" | "RA"
+    profileUserId: string;
 }
 
 export const ResetSignUp: TSignUp = {
-    companyName: "",
     name: "",
     email: "",
-    phone: "",
-    whatsapp: "",
+    role: "Student",
+    ra: "",
     password: "",
     privacyPolicy: false,
-    document: ""
+    cpf: "",
+    typeAccess: true,
+    profileUserId: ""
 } 

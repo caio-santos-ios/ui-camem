@@ -280,7 +280,7 @@ export default function Chat() {
     const loadUsers = async () => {
         try {
             const { data } = await api.get(
-                `/users?deleted=false&orderBy=name&sort=asc&pageSize=100&pageNumber=1`,
+                `/users?deleted=false&statusAccess=Aprovado&orderBy=name&sort=asc&pageSize=100&pageNumber=1`,
                 configApi()
             );
             const all: TChatUser[] = data?.result?.data ?? [];

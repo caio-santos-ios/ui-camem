@@ -28,6 +28,10 @@ export const getUserLogged = (): TUserLogged => {
     const admin  = localStorage.getItem("telemovviAdmin")  ?? "false";
     const master = localStorage.getItem("telemovviMaster") ?? "false";
 
+    const token = localStorage.getItem("telemovviToken") ?? "";
+    if (!token) return ResetUserLogged;
+    const decoded = jwtDecode<JwtPayload>(token);
+    // console.log(decoded)
     return {
         email:  "",
         name:   "",
@@ -35,5 +39,6 @@ export const getUserLogged = (): TUserLogged => {
         id,
         admin:  admin  === "true",
         master: master === "true",
+        role: ""
     };
 };

@@ -4,6 +4,9 @@ export type TUser = {
     email: string;
     profileUserId: string;
     password: string;
+    statusAccess: string;
+    cpf: string;
+    ra: string;
 }
 
 export const ResetUser: TUser = {
@@ -11,7 +14,10 @@ export const ResetUser: TUser = {
     email: "",
     name: "",
     profileUserId: "",
-    password: ""
+    password: "",
+    statusAccess: "",
+    cpf: "",
+    ra: ""
 }
 
 
@@ -36,6 +42,7 @@ export type TUserLogged = {
     id: string;
     admin: boolean;
     master: boolean;
+    role: string;
 }
 
 export const ResetUserLogged: TUserLogged = {
@@ -44,7 +51,8 @@ export const ResetUserLogged: TUserLogged = {
     email: "",
     id: "",
     admin: false,
-    master: false
+    master: false,
+    role: ""
 }
 
 export type TUserProfile = {

@@ -2,7 +2,7 @@
 
 import { loadingAtom } from "@/jotai/global/loading.jotai";
 import { useAtom } from "jotai";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { api } from "@/service/api.service";
 import { configApi, resolveResponse } from "@/service/config.service";
 import { paginationAtom } from "@/jotai/global/pagination.jotai";
@@ -15,11 +15,11 @@ import { ModalDelete } from "@/components/modal-delete/ModalDelete";
 import { NotData } from "@/components/not-data/NotData";
 import { DataTableCard } from "@/components/data-table-card/DataTableCard";
 import { TDataTableColumns } from "@/types/global/data-table-card.type";
-import { ResetTemplate, TTemplate } from "@/types/setting/template.type";
 import { MdPageview, MdSend } from "react-icons/md";
-import { VscOpenPreview } from "react-icons/vsc";
 import { templateAtom, templateModalPreviewAtom } from "@/jotai/settings/template.jotai";
 import { TemplateModalPreview } from "./TemplateModalPreview";
+import { IconView } from "@/components/icons/global/iconView/IconView";
+import { IconSendEmail } from "@/components/icons/settings/IconSendEmail";
 
 const columns: TDataTableColumns[] = [
   {title: "Código", label: "code", type: "text"},
@@ -122,15 +122,11 @@ export default function TemplateTable() {
           <>
             {
               permissionRead(module, routine) &&
-              <div title="Visualizar" onClick={() => getObj(obj, "view")} className="cursor-pointer text-orange-400 hover:text-orange-500">
-                <MdPageview />
-              </div>
+              <IconView action="view" obj={obj} getObj={getObj}/>
             }
             {
               permissionUpdate(module, routine) &&
-              <div title="Enviar E-mail" onClick={() => send(obj)} className="cursor-pointer text-blue-400 hover:text-blue-500">
-                <MdSend />
-              </div>
+              <IconSendEmail action="view" obj={obj} getObj={() => {send(obj)}}/>
             }
             {
               permissionUpdate(module, routine) &&

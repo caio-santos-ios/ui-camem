@@ -5,6 +5,7 @@ export type TProfileUser = {
     description: string;
     createdAt: string;
     modules: TModule[];
+    role: string;
 }
 
 export const ResetProfileUser: TProfileUser = {
@@ -14,6 +15,7 @@ export const ResetProfileUser: TProfileUser = {
     createdAt: "",
     description: "",
     modules: [],
+    role: "Student"
 }
 
 export type TRoutine = {

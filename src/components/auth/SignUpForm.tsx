@@ -4,26 +4,31 @@ import Label from "@/components/form/Label";
 import { EyeCloseIcon, EyeIcon } from "@/icons";
 import { loadingAtom } from "@/jotai/global/loading.jotai";
 import { api } from "@/service/api.service";
-import { resolveResponse } from "@/service/config.service";
+import { configApi, resolveResponse } from "@/service/config.service";
 import { ResetSignUp, TSignUp } from "@/types/auth/signUp.type";
 import { maskCNPJ, maskCPF, maskPhone } from "@/utils/mask.util";
 import { useAtom } from "jotai";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import Button from "../ui/button/Button";
 import { Logo } from "../logo/Logo";
+import { TProfileUser } from "@/types/setting/profile-permission.type";
+import Switch from "../form/Switch";
 
 export default function SignUpForm() {
   const [_, setIsLoading] = useAtom(loadingAtom);
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+  const [profileUsers, setProfileUsers] = useState<TProfileUser[]>([]);
 
-  const { register, handleSubmit, reset, setValue, formState: { errors }} = useForm<TSignUp>({
+  const { register, watch, handleSubmit, reset, setValue, formState: { errors }} = useForm<TSignUp>({
     defaultValues: ResetSignUp
   });
+
+  const typeAccess = watch("typeAccess");
   
   const create: SubmitHandler<TSignUp> = async (body: TSignUp) => {
     try {
@@ -43,9 +48,26 @@ export default function SignUpForm() {
     }
   };
 
+  const loaderProfileUser = async () => {
+    try {
+      const {data} = await api.get(`/profile-users/select?deleted=false`);
+      const result = data?.result?.data ?? [];
+      setProfileUsers(result);
+    } catch (error) {
+      resolveResponse(error);
+    }
+  };
+
   useEffect(() => {
     setValue("privacyPolicy", isChecked);
   }, [isChecked]);
+  
+  useEffect(() => {
+    const initial = async () => {
+      await loaderProfileUser();
+    };
+    initial();
+  }, []);
 
   return (
     <div className="flex flex-col flex-1 lg:w-1/2 w-full max-w-[90dvw] h-dvh overflow-y-auto no-scrollbar">
@@ -55,18 +77,47 @@ export default function SignUpForm() {
         </div>
         <div>
           <form onSubmit={handleSubmit(create)}>
-            <div className="grid grid-cols-4 gap-3">
-              <div className="col-span-4">
-                <Label title="Nome"/>
-                <input placeholder="Seu nome" {...register("name")} type="text" className="input-erp-primary input-erp-default"/>
+            <div className="grid grid-cols-6 gap-3">
+              <div className="col-span-6">
+                <Label title="Nome Completo"/>
+                <input placeholder="Seu nome completo" {...register("name")} type="text" className="input-erp-primary input-erp-default"/>
               </div>
 
-              <div className="col-span-4">
+              <div className="col-span-6">
                 <Label title="E-mail"/>
                 <input placeholder="Seu e-mail" {...register("email")} type="email" className="input-erp-primary input-erp-default"/>
               </div>
 
-              <div className="col-span-4">
+              <div className="col-span-6">
+                <Label title="Vínculo institucional"/>
+                <select {...register("profileUserId")} className="h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 text-sm dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 text-gray-800">
+                  <option value="">Selecione</option>
+                  {
+                    profileUsers.map(x => <option key={x.id} value={x.id}>{x.name}</option>)
+                  }
+                </select>
+              </div>
+              
+              <div className="col-span-2">
+                <Label title="Tipo de Documento"/>
+                <Switch label={typeAccess ? 'CPF' : 'RA'} defaultChecked={typeAccess} onChange={(e) => setValue("typeAccess", e)} />
+              </div>
+              
+              {
+                typeAccess ? (
+                  <div className="col-span-4">
+                    <Label title="CPF"/>
+                    <input placeholder="Seu CPF" onInput={(e: any) => maskCPF(e)} {...register("cpf")} type="text" className="input-erp-primary input-erp-default"/>
+                  </div>
+                ) : (
+                  <div className="col-span-4">
+                    <Label title="RA"/>
+                    <input maxLength={25} placeholder="Seu RA" {...register("ra")} type="text" className="input-erp-primary input-erp-default"/>
+                  </div>
+                )
+              }
+
+              <div className="col-span-6">
                 <Label title="Senha"/>
                 <div className="relative">
                   <input placeholder="Sua senha" {...register("password")} type={showPassword ? "text" : "password"} className="input-erp-primary input-erp-default"/>
@@ -80,7 +131,7 @@ export default function SignUpForm() {
                 </div>
               </div>
 
-              <div className="col-span-4 flex items-center gap-3">
+              <div className="col-span-6 flex items-center gap-3">
                 <Checkbox
                   className="w-5 h-5"
                   checked={isChecked}
@@ -97,7 +148,7 @@ export default function SignUpForm() {
                   </span>
                 </p>
               </div>
-              <div className="col-span-4">
+              <div className="col-span-6">
                 <Button type="submit" className="w-full" size="sm">Cadastrar</Button>
               </div>
             </div>

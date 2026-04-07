@@ -10,6 +10,7 @@ import { api } from "@/service/api.service";
 import { configApi, resolveResponse } from "@/service/config.service";
 import { ResetUser, TUser } from "@/types/master-data/user.type";
 import { TProfileUser } from "@/types/setting/profile-permission.type";
+import { maskCPF } from "@/utils/mask.util";
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -104,7 +105,7 @@ export const UserModalCreate = () => {
             <form className="flex flex-col p-6">
                 <div className="grid grid-cols-1 gap-x-6 gap-y-5">
                     <div className="col-span-6">
-                        <Label title="Nome"/>
+                        <Label title="Nome Completo"/>
                         <input placeholder="Nome" {...register("name")} type="text" className="input-erp-primary input-erp-default"/>
                     </div>
 
@@ -112,32 +113,24 @@ export const UserModalCreate = () => {
                         <Label title="E-mail"/>
                         <input placeholder="E-mail" {...register("email")} type="email" className="input-erp-primary input-erp-default"/>
                     </div>
-                    
-                    <div className="col-span-6">
-                        <Label title="Senha"/>
-                        <div className="relative">
-                            <input placeholder="Sua senha" {...register("password")} type={showPassword ? "text" : "password"} className="input-erp-primary input-erp-default"/>
-                            <span onClick={() => setShowPassword(!showPassword)} className="absolute z-1 -translate-y-1/2 cursor-pointer right-4 top-1/2">
-                                {showPassword ? (
-                                <EyeIcon className="fill-gray-500 dark:fill-gray-400" />
-                                ) : (
-                                <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400" />
-                                )}
-                            </span>
-                        </div>
-                    </div>
 
                     <div className="col-span-6">
-                        <Label title="Perfil do Usuário"/>
-                        <select {...register("profileUserId")} className="h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 pr-11 text-sm shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 text-gray-800 dark:bg-dark-900">
-                            <option value="" className="text-gray-700 dark:bg-gray-900 dark:text-gray-400">Selecione</option>
+                        <Label title="Vínculo institucional"/>
+                        <select {...register("profileUserId")} className="h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 text-sm dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 text-gray-800">
+                            <option value="">Selecione</option>
                             {
-                                profileUsers.map((profileUser) => (
-                                    <option key={profileUser.id} value={profileUser.id} className="text-gray-700 dark:bg-gray-900 dark:text-gray-400">{profileUser.name}</option>
-                                ))
+                                profileUsers.map(x => <option key={x.id} value={x.id}>{x.name}</option>)
                             }
                         </select>
-                    </div>   
+                    </div>
+                    <div className="col-span-6">
+                        <Label title="CPF"/>
+                        <input placeholder="Seu CPF" onInput={(e: any) => maskCPF(e)} {...register("cpf")} type="text" className="input-erp-primary input-erp-default"/>
+                    </div>
+                    <div className="col-span-6">
+                        <Label title="RA"/>
+                        <input maxLength={25} placeholder="Seu RA" {...register("ra")} type="text" className="input-erp-primary input-erp-default"/>
+                    </div>
                 </div>
                 <div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">
                     <Button size="sm" variant="outline" onClick={closeModal}>Cancelar</Button>
