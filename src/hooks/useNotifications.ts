@@ -27,6 +27,10 @@ export const useNotifications = () => {
         (conn: signalR.HubConnection) => {
             connectionRef.current = conn;
 
+            conn.off("ReceiveNotification");
+            conn.off("NotificationRead");
+            conn.off("AllNotificationsRead");
+
             conn.on("ReceiveNotification", (notif: TNotification) => {
                 setNotifications((prev) => [notif, ...prev]);
                 setUnreadCount((prev) => prev + 1);

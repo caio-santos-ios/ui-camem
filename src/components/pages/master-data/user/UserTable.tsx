@@ -16,7 +16,7 @@ import { DataTableCard } from "@/components/data-table-card/DataTableCard";
 import { TDataTableColumns } from "@/types/global/data-table-card.type";
 import { UserModalCreate } from "./UserModalCreate";
 import { userAtom, userModalAtom, userModalUpdatePasswordAtom } from "@/jotai/master-data/user.jotai";
-import { FaLock } from "react-icons/fa";
+import { FaLock, FaUsers } from "react-icons/fa";
 import { getUserLogged } from "@/utils/auth.util";
 import { TUserLogged } from "@/types/master-data/user.type";
 import { UserModalUpdatePassword } from "./UserModalUpdatePassword";
@@ -25,6 +25,7 @@ import { IconApprove } from "@/components/icons/global/iconApprove/IconApprove";
 import { ModalConfirm } from "@/components/modal-confirm/ModalConfirm";
 import { IconUpdatePassword } from "@/components/icons/master-data/IconUpdatePassword";
 import { IconForceApprove } from "@/components/icons/master-data/IconForceApprove";
+import { MdCancel, MdCheckCircle, MdOutlinePendingActions } from "react-icons/md";
 
 const columns: TDataTableColumns[] = [
   {title: "Nome", label: "name", type: "text"},
@@ -54,11 +55,11 @@ export default function UserTable() {
   const [modalUpdatePassword, setModalUpdatePassword] = useAtom(userModalUpdatePasswordAtom);
   const [currentTab, setCurrentTab] = useState("all");
   const [currentStatusAccess, setCurrentStatusAccess] = useState("");
-  const [tabs, setTabs] = useState<{key: string; title: string}[]>([
-    { key: "all",       title: "Todos Usuários" },
-    { key: "pending",   title: "Pendentes" },
-    { key: "approved",  title: "Aprovados" },
-    { key: "reproved",  title: "Reprovados" },
+  const [tabs, setTabs] = useState<{key: string; title: string; quantity: number; icon: any}[]>([
+    {icon: '', quantity: 0, key: "all",       title: "Todos Usuários" },
+    {icon: '', quantity: 0, key: "pending",   title: "Pendentes" },
+    {icon: '', quantity: 0, key: "approved",  title: "Aprovados" },
+    {icon: '', quantity: 0, key: "reproved",  title: "Reprovados" },
   ]);
   const userLogged: TUserLogged = getUserLogged();
 
@@ -98,10 +99,10 @@ export default function UserTable() {
       const countReprove = result.filter((x: any) => x.statusAccess == "Reprovado");
 
       setTabs([
-        { key: "all",       title: `Todos Usuários (${result.length})` },
-        { key: "pending",   title: `Pendentes (${countPending.length})` },
-        { key: "approved",  title: `Aprovados (${countApprove.length})` },
-        { key: "reproved",  title: `Reprovados (${countReprove.length})` },
+        { icon: <FaUsers />, quantity: result.length, key: "all",       title: `Todos Usuários (${result.length})` },
+        { icon: <MdOutlinePendingActions />, quantity: countPending.length, key: "pending",   title: `Pendentes (${countPending.length})` },
+        { icon: <MdCheckCircle />, quantity: countApprove.length, key: "approved",  title: `Aprovados (${countApprove.length})` },
+        { icon: <MdCancel />, quantity: countReprove.length, key: "reproved",  title: `Reprovados (${countReprove.length})` },
       ]);
     } catch (error) {
       resolveResponse(error);
@@ -192,19 +193,25 @@ export default function UserTable() {
 
   return (
     <div>
-      <div className="flex items-center font-medium gap-2 rounded-lg transition px-2 py-2 text-sm border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/3 mb-3 text-gray-700 dark:text-gray-400">
+      <div className="flex justify-between md:justify-start items-center font-medium gap-2 rounded-lg transition px-2 py-2 text-sm border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/3 mb-3 text-gray-700 dark:text-gray-400">
         {tabs.map((tab) => (
           <button
             key={tab.key}
             onClick={() => changeTab(tab.key)}
             className={`${currentTab === tab.key ? "bg-brand-500 text-white" : ""} px-3 py-1 rounded-md transition-colors`}>
-            {tab.title}
+            <span className="hidden md:block">{tab.title}</span>
+            <div className="flex flex-col justify-center items-center md:hidden">
+              <span className="md:hidden">({tab.quantity})</span>
+              <span className="md:hidden">
+                {tab.icon}
+              </span>
+            </div>
           </button>
         ))}
       </div>
       {
         pagination.data.length > 0 ? 
-        <DataTableCard isActions={permissionUpdate(module, routine) || permissionDelete(module, routine)} pagination={pagination} columns={columns} changePage={changePage} actions={(obj) => (
+        <DataTableCard heightContainer="max-h-[calc(100dvh-20rem)] md:max-h-[calc(100dvh-16.5rem)]" isActions={permissionUpdate(module, routine) || permissionDelete(module, routine)} pagination={pagination} columns={columns} changePage={changePage} actions={(obj) => (
           <>
             {
               permissionUpdate(module, routine) && (obj.id == userLogged.id || userLogged.admin || userLogged.master) &&
