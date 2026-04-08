@@ -126,13 +126,15 @@ const AppSidebar: React.FC = () => {
           <ul className="flex flex-col gap-4">
             {filteredNav.map((nav, index) => {
               const IconComponent = nav.icon ? icons[nav.icon] : null;
+              let IconRoutineComponent = nav.path ? icons[nav.subItems![0].icon!] : null;
+
               const hasAccess = nav.authorized || isAdmin;
 
               if (!hasAccess) return null;
 
               return (
                 <li key={nav.name}>
-                  {nav.subItems ? (
+                  {nav.subItems && !nav.path ? (
                     <>
                       <button 
                         onClick={() => handleSubmenuToggle(index)}
@@ -169,9 +171,9 @@ const AppSidebar: React.FC = () => {
                   ) : (
                     <Link href={nav.path || "#"} className={`menu-item group ${isActive(nav.path || "") ? "menu-item-active" : "menu-item-inactive"}`}>
                       <span className={isActive(nav.path || "") ? "menu-item-icon-active" : "menu-item-icon-inactive"}>
-                        {IconComponent && <IconComponent size={15} />}
+                        {IconRoutineComponent && <IconRoutineComponent size={15} />}
                       </span>
-                      {(isExpanded || isHovered || isMobileOpen) && <span className="menu-item-text">{nav.name}</span>}
+                      {(isExpanded || isHovered || isMobileOpen) && <span className="menu-item-text">{nav.subItems![0].name}</span>}
                     </Link>
                   )}
                 </li>

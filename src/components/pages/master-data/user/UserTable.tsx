@@ -110,6 +110,32 @@ export default function UserTable() {
       setLoading(false);
     }
   };
+
+  const inputSearch = async (e: any) => {
+    try {
+      const search = e.target.value;
+      let query = "";
+
+      if(!search) {
+        query = ""
+      } else {
+        query = `&regex$or$name=${search}&regex$or$email=${search}&regex$or$profileUserName=${search}`;
+      }
+
+      const {data} = await api.get(`/users?deleted=false${query}&orderBy=createdAt&sort=desc&pageSize=10&pageNumber=1`, configApi());
+      const result = data.result;
+
+      setPagination({
+        currentPage: result.currentPage,
+        data: result.data,
+        sizePage: result.pageSize,
+        totalPages: result.totalPages,
+        totalCount: result.totalCount,
+      });
+    } catch (error) {
+      resolveResponse(error);
+    }
+  };
   
   const destroy = async () => {
     try {
@@ -193,7 +219,7 @@ export default function UserTable() {
 
   return (
     <div>
-      <div className="flex justify-between md:justify-start items-center font-medium gap-2 rounded-lg transition px-2 py-2 text-sm border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/3 mb-3 text-gray-700 dark:text-gray-400">
+      <div className="flex justify-between md:justify-start items-center font-medium gap-2 rounded-lg transition px-2 py-2 text-sm border border-gray-200 bg-white dark:border-white/5 dark:bg-white/3 mb-3 text-gray-700 dark:text-gray-400">
         {tabs.map((tab) => (
           <button
             key={tab.key}
@@ -209,9 +235,12 @@ export default function UserTable() {
           </button>
         ))}
       </div>
+      <div className="grid grid-cols-1 mb-3">
+        <input onInput={(e: any) => inputSearch(e)} placeholder="Busca rápida" type="text" className="input-erp-primary input-erp-default"/>
+      </div>
       {
         pagination.data.length > 0 ? 
-        <DataTableCard heightContainer="max-h-[calc(100dvh-20rem)] md:max-h-[calc(100dvh-16.5rem)]" isActions={permissionUpdate(module, routine) || permissionDelete(module, routine)} pagination={pagination} columns={columns} changePage={changePage} actions={(obj) => (
+        <DataTableCard heightContainer="max-h-[calc(100dvh-24rem)]" isActions={permissionUpdate(module, routine) || permissionDelete(module, routine)} pagination={pagination} columns={columns} changePage={changePage} actions={(obj) => (
           <>
             {
               permissionUpdate(module, routine) && (obj.id == userLogged.id || userLogged.admin || userLogged.master) &&

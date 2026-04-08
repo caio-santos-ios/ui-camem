@@ -13,4 +13,5 @@ export type NavSubItem = { name: string;
   new?: boolean, 
   code: string, 
   authorized: boolean 
+  icon?: string, 
 }

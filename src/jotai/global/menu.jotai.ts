@@ -3,14 +3,6 @@ import { atom } from "jotai";
 
 export const menuOpenAtom = atom<boolean>(false);
 export const menuRoutinesAtom = atom<NavItem[]>([
-  // {
-  //   icon: "MdChat",
-  //   name: "Chat",
-  //   authorized: false,
-  //   code: "C",
-  //   path: "/chat",          
-  //   subItems: undefined,
-  // },
   {
     icon: "FiSettings",
     name: "Configurações",
@@ -29,8 +21,19 @@ export const menuRoutinesAtom = atom<NavItem[]>([
     name: "Cadastros",
     authorized: false,
     code: "B",
+    path: "/master-data/users",
     subItems: [
-      {name: "Usuários",          path: "/master-data/users",          code: "B1", pro: false, authorized: false },
+      {name: "Usuários",          path: "/master-data/users",          code: "B1", icon: "MdPeople", pro: false, authorized: false },
+    ]
+  },
+  {
+    icon: "FiGrid",
+    name: "Eventos",
+    authorized: false,
+    code: "C",
+    path: "/events",
+    subItems: [
+      {name: "Eventos",          path: "/events",          code: "C1", pro: false, authorized: false },
     ]
   }
 ]);
