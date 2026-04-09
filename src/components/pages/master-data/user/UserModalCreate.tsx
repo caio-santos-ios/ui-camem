@@ -1,6 +1,7 @@
 "use client";
 
 import Label from "@/components/form/Label";
+import Switch from "@/components/form/Switch";
 import Button from "@/components/ui/button/Button";
 import ModalV2 from "@/components/ui/modalV2"
 import { EyeCloseIcon, EyeIcon } from "@/icons";
@@ -20,16 +21,17 @@ export const UserModalCreate = () => {
     const [user, setUser] = useAtom(userAtom);
     const [_, setLoading] = useAtom(loadingAtom);
     const [profileUsers, setProfileUsers] = useState<TProfileUser[]>([]);
-    const [showPassword, setShowPassword] = useState(false);
 
     const { register, handleSubmit, reset, setValue, watch, getValues, formState: { errors }} = useForm<TUser>({
         defaultValues: ResetUser
     });
 
+    const blocked = watch("blocked");
+
     const closeModal = () => {
         setModal(false);
         setUser(ResetUser);
-        reset();
+        reset(ResetUser);
     };
 
     const confirm = async (body: TUser) => {
@@ -106,7 +108,7 @@ export const UserModalCreate = () => {
                 <div className="grid grid-cols-1 gap-x-6 gap-y-5">
                     <div className="col-span-6">
                         <Label title="Nome Completo"/>
-                        <input placeholder="Nome" {...register("name")} type="text" className="input-erp-primary input-erp-default"/>
+                        <input placeholder="Nome Completo" {...register("name")} type="text" className="input-erp-primary input-erp-default"/>
                     </div>
 
                     <div className="col-span-6">
@@ -130,6 +132,10 @@ export const UserModalCreate = () => {
                     <div className="col-span-6">
                         <Label title="RA"/>
                         <input maxLength={25} placeholder="Seu RA" {...register("ra")} type="text" className="input-erp-primary input-erp-default"/>
+                    </div>
+                    <div className="col-span-2">
+                        <Label title="Usuário bloqueado?"/>
+                        <Switch label={blocked ? 'Sim' : 'Não'} defaultChecked={blocked} onChange={(e) => setValue("blocked", e)} />
                     </div>
                 </div>
                 <div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">

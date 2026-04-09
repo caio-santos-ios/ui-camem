@@ -29,10 +29,12 @@ import { MdCancel, MdCheckCircle, MdOutlinePendingActions } from "react-icons/md
 
 const columns: TDataTableColumns[] = [
   {title: "Nome", label: "name", type: "text"},
+  {title: "RA", label: "ra", type: "text"},
+  {title: "CPF", label: "cpf", type: "text"},
   {title: "E-mail", label: "email", type: "text"},
   {title: "Acesso", label: "statusAccess", type: "text"},
   {title: "Vínculo institucional", label: "profileUserName", type: "text"},
-  {title: "Data de Criação", label: "createdAt", type: "date"},
+  // {title: "Data de Criação", label: "createdAt", type: "date"},
 ]
 
 const module = "B";
@@ -213,13 +215,13 @@ export default function UserTable() {
 
   useEffect(() => {
     if(permissionRead(module, routine)) {
-      getAll(1, "");
+      getAll(1, currentStatusAccess);
     };
   }, [modal, modalUpdatePassword]);
 
   return (
     <div>
-      <div className="flex justify-between md:justify-start items-center font-medium gap-2 rounded-lg transition px-2 py-2 text-sm border border-gray-200 bg-white dark:border-white/5 dark:bg-white/3 mb-3 text-gray-700 dark:text-gray-400">
+      <div className="flex justify-around md:justify-start items-center font-medium gap-2 rounded-lg transition px-2 py-2 text-sm border border-gray-200 bg-white dark:border-white/5 dark:bg-white/3 mb-3 text-gray-700 dark:text-gray-400">
         {tabs.map((tab) => (
           <button
             key={tab.key}

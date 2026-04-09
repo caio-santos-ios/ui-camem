@@ -7,6 +7,7 @@ export type TUser = {
     statusAccess: string;
     cpf: string;
     ra: string;
+    blocked: boolean;
 }
 
 export const ResetUser: TUser = {
@@ -17,7 +18,8 @@ export const ResetUser: TUser = {
     password: "",
     statusAccess: "",
     cpf: "",
-    ra: ""
+    ra: "",
+    blocked: false
 }
 
 

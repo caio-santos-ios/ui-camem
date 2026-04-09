@@ -18,9 +18,8 @@ export default function SignInForm() {
   const [_, setIsLoading] = useAtom(loadingAtom);
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
-  const [isChecked, setIsChecked] = useState(false);
   
-  const { register, handleSubmit, reset, formState: { errors }} = useForm<TSignIn>();
+  const { register, handleSubmit } = useForm<TSignIn>();
   
   const login: SubmitHandler<TSignIn> = async (body: TSignIn) => {
     try {
@@ -29,11 +28,7 @@ export default function SignInForm() {
       const result = data.result.data;
       
       saveLocalStorage(result, true);
-      if(result.admin) {
-        router.push("/dashboard");
-      } else {
-        router.push("/master-data/profile");
-      };
+      router.push("/master-data/profile");
     } catch (error) {
       resolveResponse(error);
     } finally {

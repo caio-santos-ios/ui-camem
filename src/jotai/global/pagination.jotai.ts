@@ -6,5 +6,5 @@ export const paginationAtom = atom<TPagination>({
     totalPages: 1,
     totalCount: 100,
     currentPage: 1,
-    sizePage: 10 
+    sizePage: 10
 })
