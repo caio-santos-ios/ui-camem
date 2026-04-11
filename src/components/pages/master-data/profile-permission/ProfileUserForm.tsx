@@ -173,6 +173,7 @@ export default function ProfileUserForm({id}: TProp) {
               <option value="Teacher">Teacher</option>
               <option value="Coordinator">Coordinator</option>
               <option value="Director">Director</option>
+              <option value="Manager">Manager</option>
             </select>
           </div>
           <div className="col-span-6 xl:col-span-3">
