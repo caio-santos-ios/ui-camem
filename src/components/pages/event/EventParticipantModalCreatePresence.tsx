@@ -48,8 +48,7 @@ export const EventParticipantModalCreatePresence = () => {
             setLoading(true);
             const {data} = await api.put(`/events/finish`, body, configApi());
             resolveResponse({status: 200, message: data.result.message});
-            await getAll(1);
-            reset(ResetEventParticipant);
+            closeModal()
         } catch (error) {
             resolveResponse(error);
         } finally {
