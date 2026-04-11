@@ -11,9 +11,16 @@ type TProps = {
     startDate: string;
     endDate?: string;
     actions: ReactNode;
+    status: string;
 };
 
-export const EventCard = ({ id, title, description, participants, startDate, endDate, actions }: TProps) => {
+const statusLabel: Record<string, { label: string; className: string }> = {
+    Finalizado:  { label: "Finalizado",  className: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400" },
+    Publicado: { label: "Publicado", className: "bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400" },
+    Rascunho:  { label: "Rascunho",  className: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400" },
+};
+
+export const EventCard = ({ id, title, description, participants, startDate, endDate, actions, status }: TProps) => {
     const visibleParticipants = participants.slice(0, 3);
     const remaining = participants.length - visibleParticipants.length;
 
@@ -64,7 +71,10 @@ export const EventCard = ({ id, title, description, participants, startDate, end
                     </div>
                     <div className="flex justify-between w-full">
                         <span className="text-xs text-gray-400 dark:text-gray-500">{participants.length} participante{participants.length !== 1 ? "s" : ""}</span>
-                        {actions}
+                        <div className={`flex items-center gap-4`}>
+                            <span className={`px-2 rounded-xl text-sm ${statusLabel[status].className ?? ''}`}>{statusLabel[status].label ?? ''}</span>
+                            {actions}
+                        </div>
                     </div>
                 </div>
             </div>

@@ -3,7 +3,7 @@ import AuditTable from "@/components/pages/settings/audit/AuditTable";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Sistema de Gestão | Auditoria",
+  title: "CAMEM | Auditoria",
   description: "This is Next.js Form Elements page for TailAdmin - Next.js Tailwind CSS Admin Dashboard Template",
 };
 

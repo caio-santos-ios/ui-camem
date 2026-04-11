@@ -3,7 +3,7 @@ import ServiceOrderForm from "@/components/pages/commercial/service-order/Servic
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Sistema de Gestão | Ordem de Serviço",
+  title: "CAMEM | Ordem de Serviço",
   description: "Cadastro de Ordem de Serviço",
 };
 

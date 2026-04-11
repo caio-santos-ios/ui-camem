@@ -5,7 +5,7 @@ import ServiceOrderTable from "@/components/pages/commercial/service-order/Servi
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Sistema de Gestão | Ordens de Serviço",
+    title: "CAMEM | Ordens de Serviço",
     description: "Gerenciamento de Ordens de Serviço",
 };
 

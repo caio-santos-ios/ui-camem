@@ -8,6 +8,8 @@ export type TUser = {
     cpf: string;
     ra: string;
     blocked: boolean;
+    role: string;
+    photo: string;
 }
 
 export const ResetUser: TUser = {
@@ -19,7 +21,9 @@ export const ResetUser: TUser = {
     statusAccess: "",
     cpf: "",
     ra: "",
-    blocked: false
+    blocked: false,
+    photo: "",
+    role: ""
 }
 
 
@@ -37,40 +41,50 @@ export const ResetUserResetPassword: TUserResetPassword = {
     confirmPassword: ""
 }
 
-export type TUserLogged = {
-    photo: string;
-    name: string;
-    email: string;
-    id: string;
-    admin: boolean;
-    master: boolean;
-    role: string;
-}
-
-export const ResetUserLogged: TUserLogged = {
-    photo: "",
-    name: "",
-    email: "",
-    id: "",
-    admin: false,
-    master: false,
-    role: ""
-}
-
 export type TUserProfile = {
-    id?: string;
-    photo: any;
+    id: string;
     name: string;
     email: string;
-    phone: string;
-    whatsapp: string;
+    password: string;
+    cpf: string;
+    ra: string;
+    photo: string;
 }
 
 export const ResetUserProfile: TUserProfile = {
     id: "",
-    photo: "",
-    name: "",
     email: "",
-    phone: "",
-    whatsapp: "",
+    name: "",
+    password: "",
+    cpf: "",
+    ra: "",
+    photo: ""
+}
+
+export type TUserLogged = {
+    id: string;
+    name: string;
+    email: string;
+    photo: string;
+    role: string;
+    master: boolean;
+    admin: boolean;
+    statusAccess: string;
+    blocked: boolean;
+    cpf: string;
+    ra: string;
+}
+
+export const ResetUserLogged: TUserLogged = {
+    id: "",
+    email: "",
+    name: "",
+    photo: "",
+    role: "",
+    master: false,
+    admin: false,
+    statusAccess: "",
+    blocked: false,
+    cpf: "",
+    ra: ""
 }

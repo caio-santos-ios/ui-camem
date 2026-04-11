@@ -1,7 +1,7 @@
 import { TPagination } from "@/types/global/pagination.type"
 import Pagination from "../tables/Pagination";
 import { Table, TableBody, TableCell, TableHeader, TableRow } from "../table/Table";
-import { formattedDocument, formattedMoney, maskDate } from "@/utils/mask.util";
+import { formattedMoney, maskDate } from "@/utils/mask.util";
 import { TDataTableColumns } from "@/types/global/data-table-card.type";
 import { ReactNode } from "react";
 
@@ -15,12 +15,9 @@ type TProps = {
 }
 
 const statusLabel: {label: string; className: string;}[] = [
-    {label: "Em Aberto", className: "bg-gray-100 text-gray-700"},
-    {label: "Recebido Parcial", className: "bg-orange-100 text-orange-700"},
-    {label: "Recebido", className: "bg-green-100 text-green-700"},
-    {label: "Cancelado", className: "bg-red-100 text-red-700"},
-    {label: "Pago Parcial", className: "bg-orange-100 text-orange-700"},
-    {label: "Pago", className: "bg-green-100 text-green-700"},
+    {label: "Aprovado", className: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400"},
+    {label: "Pendente", className: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"},
+    {label: "Reprovado", className: "bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400"},
 ]
 
 const getStatusBadge = (status: string) => {

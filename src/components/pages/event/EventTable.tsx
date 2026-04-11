@@ -125,7 +125,7 @@ export default function EventTable() {
             {
               pagination.data.map((obj: any) => {
                 return (
-                  <EventCard key={obj.id} id={obj.id} title={obj.title} description={obj.description} startDate={obj.startDate} endDate={obj.endDate} participants={obj.participants ?? []} 
+                  <EventCard key={obj.id} id={obj.id} title={obj.title} description={obj.description} startDate={obj.startDate} endDate={obj.endDate} participants={obj.participants ?? []} status={obj.status}
                     actions={
                       <div className="flex gap-4">
                         {

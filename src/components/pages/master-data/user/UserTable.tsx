@@ -18,7 +18,6 @@ import { UserModalCreate } from "./UserModalCreate";
 import { userAtom, userModalAtom, userModalUpdatePasswordAtom } from "@/jotai/master-data/user.jotai";
 import { FaLock, FaUsers } from "react-icons/fa";
 import { getUserLogged } from "@/utils/auth.util";
-import { TUserLogged } from "@/types/master-data/user.type";
 import { UserModalUpdatePassword } from "./UserModalUpdatePassword";
 import { IconReprove } from "@/components/icons/global/iconReprove/IconRepprove";
 import { IconApprove } from "@/components/icons/global/iconApprove/IconApprove";
@@ -26,26 +25,20 @@ import { ModalConfirm } from "@/components/modal-confirm/ModalConfirm";
 import { IconUpdatePassword } from "@/components/icons/master-data/IconUpdatePassword";
 import { IconForceApprove } from "@/components/icons/master-data/IconForceApprove";
 import { MdCancel, MdCheckCircle, MdOutlinePendingActions } from "react-icons/md";
+import { TUserLogged } from "@/types/master-data/user.type";
 
 const columns: TDataTableColumns[] = [
   {title: "Nome", label: "name", type: "text"},
   {title: "RA", label: "ra", type: "text"},
   {title: "CPF", label: "cpf", type: "text"},
   {title: "E-mail", label: "email", type: "text"},
-  {title: "Acesso", label: "statusAccess", type: "text"},
+  {title: "Acesso", label: "statusAccess", type: "workflow"},
   {title: "Vínculo institucional", label: "profileUserName", type: "text"},
   // {title: "Data de Criação", label: "createdAt", type: "date"},
 ]
 
 const module = "B";
 const routine = "B1";
-
-const TABS = [
-  { key: "all",       title: "Todos Usuários" },
-  { key: "pending",   title: "Pendentes" },
-  { key: "approved",  title: "Aprovados" },
-  { key: "reproved",  title: "Reprovados" },
-];
 
 export default function UserTable() {
   const [_, setLoading] = useAtom(loadingAtom);
@@ -63,6 +56,7 @@ export default function UserTable() {
     {icon: '', quantity: 0, key: "approved",  title: "Aprovados" },
     {icon: '', quantity: 0, key: "reproved",  title: "Reprovados" },
   ]);
+
   const userLogged: TUserLogged = getUserLogged();
 
   const getAll = async (page: number, statusAccess: string) => {
@@ -71,7 +65,6 @@ export default function UserTable() {
       let query = "deleted=false"
       if(statusAccess) query += `&statusAccess=${statusAccess}`;
       if(!userLogged.master) {
-        console.log(userLogged)
         query += "&master=false&admin=false";
       }
 

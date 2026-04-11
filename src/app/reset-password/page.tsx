@@ -2,7 +2,7 @@ import ResetPasswordForm from "@/components/auth/ResetPasswordForm";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Sistema de Gestão | Recuperar Senha",
+  title: "CAMEM | Recuperar Senha",
   description: "This is Next.js Signin Page TailAdmin Dashboard Template",
 };
 

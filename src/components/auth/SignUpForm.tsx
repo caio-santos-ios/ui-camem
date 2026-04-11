@@ -243,10 +243,11 @@ export default function SignUpForm() {
                       <>
                         <Label title="RA" />
                         <input
-                          maxLength={25}
                           placeholder="Seu RA"
                           {...register("ra")}
                           type="text"
+                          inputMode="numeric"
+                          maxLength={6}
                           className="input-erp-primary input-erp-default"
                         />
                       </>

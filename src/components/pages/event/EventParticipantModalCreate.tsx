@@ -256,7 +256,7 @@ export const EventParticipantModalCreate = () => {
                                                 <input {...register(`functions.${index}.name`)} placeholder="Nome da função" className="input-erp-primary input-erp-default" />
                                             </div>
                                             <div className="col-span-2">
-                                                <input {...register(`functions.${index}.hours`, { valueAsNumber: true })} type="number" placeholder="Horas" className="input-erp-primary input-erp-default" />
+                                                <input {...register(`functions.${index}.hours`, { valueAsNumber: true })} type="number" placeholder="Horas" className="input-erp-primary input-erp-default no-spinner" />
                                             </div>
                                             <div className="col-span-1 flex justify-end">
                                                 <IconDelete action="delete" getObj={() => remove(index)} obj={{}}/>

@@ -6,7 +6,7 @@ import { eventAtom, eventParticipantModalPresenceAtom } from "@/jotai/event/even
 import { loadingAtom } from "@/jotai/global/loading.jotai";
 import { api } from "@/service/api.service";
 import { configApi, resolveResponse } from "@/service/config.service";
-import { ResetEventParticipant, TEvent, TEventParticipant } from "@/types/event/event.type";
+import { ResetEvent, ResetEventParticipant, TEvent, TEventParticipant } from "@/types/event/event.type";
 import { ResetPagination, TPagination } from "@/types/global/pagination.type";
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
@@ -17,7 +17,7 @@ export const EventParticipantModalCreatePresence = () => {
     const [_, setLoading] = useAtom(loadingAtom);
     const [pagination, setPagination] = useState<TPagination>(ResetPagination);
     const [modal, setModal] = useAtom(eventParticipantModalPresenceAtom);
-    const [event] = useAtom(eventAtom);
+    const [event, setEvent] = useAtom(eventAtom);
     const [openId, setOpenId] = useState<string | null>(null);
 
     const { reset, setValue } = useForm<TEventParticipant>({
@@ -26,6 +26,7 @@ export const EventParticipantModalCreatePresence = () => {
 
     const closeModal = () => {
         setModal(false);
+        setEvent(ResetEvent);
         reset(ResetEventParticipant);
     };
 

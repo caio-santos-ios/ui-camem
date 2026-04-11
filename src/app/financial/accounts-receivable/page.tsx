@@ -4,7 +4,7 @@ import AccountReceivableTable from "@/components/pages/financial/accounts-receiv
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Sistema de Gestão | Contas a Receber",
+  title: "CAMEM | Contas a Receber",
   description: "Gestão de contas a receber",
 };
 

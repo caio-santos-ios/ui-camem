@@ -3,7 +3,7 @@ import DreReport from "@/components/pages/financial/dre/DreReport";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Sistema de Gestão | DRE",
+    title: "CAMEM | DRE",
     description: "Demonstração do Resultado do Exercício",
 };
 

@@ -3,7 +3,7 @@ import Chat from "@/components/pages/chat/Chat";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Sistema de Gestão | Chat",
+    title: "CAMEM | Chat",
     description: "Chat em tempo real",
 };
 

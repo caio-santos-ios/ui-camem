@@ -4,7 +4,7 @@ import AccountPayableTable from "@/components/pages/financial/account-payable/Ac
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Sistema de Gestão | Contas a Pagar",
+    title: "CAMEM | Contas a Pagar",
     description: "Gestão de contas a pagar",
 };
 

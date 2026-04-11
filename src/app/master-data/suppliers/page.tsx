@@ -4,7 +4,7 @@ import SupplierTable from "@/components/pages/master-data/supplier/SupplierTable
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Sistema de Gestão | Fornecedores",
+  title: "CAMEM | Fornecedores",
   description: "This is Next.js Form Elements page for TailAdmin - Next.js Tailwind CSS Admin Dashboard Template",
 };
 

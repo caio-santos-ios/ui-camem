@@ -4,7 +4,7 @@ import TriggerTable from "@/components/pages/settings/trigger/TriggerTable";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Sistema de Gestão | Triggers",
+    title: "CAMEM | Triggers",
     description: "Gerenciamento de triggers de disparo automático",
 };
 
