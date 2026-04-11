@@ -70,6 +70,10 @@ export default function UserTable() {
       setLoading(true);
       let query = "deleted=false"
       if(statusAccess) query += `&statusAccess=${statusAccess}`;
+      if(!userLogged.master) {
+        console.log(userLogged)
+        query += "&ne$role=Master";
+      }
 
       await getCount();
 
