@@ -1,5 +1,7 @@
 import { atom } from "jotai";
 
 export const modalAtom = atom<boolean>(false);
+export const modalDeleteAtom = atom<boolean>(false);
+export const modalConfirmAtom = atom<boolean>(false);
 export const modalGenericTableAtom = atom<boolean>(false);
 export const tableGenericTableAtom = atom<string>("");

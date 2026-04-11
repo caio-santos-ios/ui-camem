@@ -198,3 +198,8 @@ export const formattedDocument = (value: string): string => {
     .replace(/(\d{4})(\d)/, "$1-$2")
     .substring(0, 18);
 };
+
+export const toISOOrNull = (date?: string | null): string | null => {
+  if (!date) return null;
+  return new Date(date).toISOString();
+};

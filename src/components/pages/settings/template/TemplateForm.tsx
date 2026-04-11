@@ -31,6 +31,8 @@ export default function TemplateForm({id}: TProp) {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [template, setTemplate] = useAtom(templateAtom);
   const [__, setPreviewTemplateModal] = useAtom(templateModalPreviewAtom);
+  const [mounted, setMounted] = useState(false);
+
   const router = useRouter();
 
   const { register, reset, setValue, watch, getValues } = useForm<TTemplate>({
@@ -98,6 +100,10 @@ export default function TemplateForm({id}: TProp) {
   };
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
     const initial = async () => {
       if(id != "create") {
         await getById(id!);
@@ -117,7 +123,7 @@ export default function TemplateForm({id}: TProp) {
           <div className="col-span-6">
             <Label title="HTML"/>
             <div className="rounded-lg overflow-hidden border border-gray-300 dark:border-gray-700">
-              <MonacoEditor
+              {/* <MonacoEditor
                 height={'450px'}
                 language="html"
                 theme="vs-dark"
@@ -133,29 +139,44 @@ export default function TemplateForm({id}: TProp) {
                   scrollBeyondLastLine: false,
                   tabSize: 2,
                 }}
-              />
+              /> */}
+              {mounted && (
+                <MonacoEditor
+                  height={'450px'}
+                  language="html"
+                  theme="vs-dark"
+                  value={watch("html")}
+                  onChange={(value) => setValue("html", value ?? "")}
+                  options={{
+                    minimap: { enabled: false },
+                    fontSize: 14,
+                    wordWrap: "on",
+                    formatOnPaste: true,
+                    formatOnType: true,
+                    automaticLayout: true,
+                    scrollBeyondLastLine: false,
+                    tabSize: 2,
+                  }}
+                />
+              )}
             </div>
           </div>
         </div>
       </ComponentCard>
-      {
-        permissionRead(module, routine) && (
-          <Button variant="outline" onClick={() => {
-            setPreviewTemplateModal(true);
-            setTemplate({...getValues()});
-          }} type="submit" className="max-w-20 mt-2" size="sm">Preview</Button>
-        )
-      }
-      {
-        permissionUpdate(module, routine) && (
-          <Button variant="outline" onClick={send} type="submit" className="max-w-20 mt-2 ms-2" size="sm">Enviar</Button>
-        )
-      }
-      {
-        permissionUpdate(module, routine) && (
-          <Button onClick={() => save({...getValues()})} type="submit" className="max-w-20 mt-2 ms-2" size="sm">Salvar</Button>
-        )
-      }
+      {mounted && permissionRead(module, routine) && (
+        <Button variant="outline" onClick={() => {
+          setPreviewTemplateModal(true);
+          setTemplate({...getValues()});
+        }} type="submit" className="max-w-20 mt-2" size="sm">Preview</Button>
+      )}
+
+      {mounted && permissionUpdate(module, routine) && (
+        <Button variant="outline" onClick={send} type="submit" className="max-w-20 mt-2 ms-2" size="sm">Enviar</Button>
+      )}
+
+      {mounted && permissionUpdate(module, routine) && (
+        <Button onClick={() => save({...getValues()})} type="submit" className="max-w-20 mt-2 ms-2" size="sm">Salvar</Button>
+      )}
       <TemplateModalPreview />
     </>
   );

@@ -1,0 +1,109 @@
+"use client";
+
+import Button from "@/components/ui/button/Button";
+import ModalV2 from "@/components/ui/modalV2"
+import { eventAtom, eventParticipantModalPresenceAtom } from "@/jotai/event/event.jotai";
+import { loadingAtom } from "@/jotai/global/loading.jotai";
+import { api } from "@/service/api.service";
+import { configApi, resolveResponse } from "@/service/config.service";
+import { ResetEventParticipant, TEvent, TEventParticipant } from "@/types/event/event.type";
+import { ResetPagination, TPagination } from "@/types/global/pagination.type";
+import { useAtom } from "jotai";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { EventParticipantCardPresence } from "./EventParticipantCardPresence";
+
+export const EventParticipantModalCreatePresence = () => {
+    const [_, setLoading] = useAtom(loadingAtom);
+    const [pagination, setPagination] = useState<TPagination>(ResetPagination);
+    const [modal, setModal] = useAtom(eventParticipantModalPresenceAtom);
+    const [event] = useAtom(eventAtom);
+    const [openId, setOpenId] = useState<string | null>(null);
+
+    const { reset, setValue } = useForm<TEventParticipant>({
+        defaultValues: ResetEventParticipant
+    });
+
+    const closeModal = () => {
+        setModal(false);
+        reset(ResetEventParticipant);
+    };
+
+    const confirm = async (body: TEventParticipant) => {
+        try {
+            setLoading(true);
+            const {data} = await api.put(`/event-participants/presence`, body, configApi());
+            resolveResponse({status: 200, message: data.result.message});
+            await getAll(1);
+            reset(ResetEventParticipant);
+        } catch (error) {
+            resolveResponse(error);
+        } finally {
+            setLoading(false);
+        }
+    }
+    
+    const finish = async (body: TEvent) => {
+        try {
+            setLoading(true);
+            const {data} = await api.put(`/events/finish`, body, configApi());
+            resolveResponse({status: 200, message: data.result.message});
+            closeModal()
+        } catch (error) {
+            resolveResponse(error);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    const getAll = async (page: number) => {
+        try {
+            setLoading(true);
+            const {data} = await api.get(`/event-participants?deleted=false&eventId=${event.id}&orderBy=createdAt&sort=desc&pageSize=10&pageNumber=${page}`, configApi());
+            const result = data.result.data ?? ResetPagination;
+            
+            setPagination({
+                ...ResetPagination,
+                currentPage: result.currentPage,
+                data: result.data.map((x: any) => ({...x, function: x.functions.map((x: any) => (x.name)).join("/"), hour: x.functions.map((x: any) => (x.hours)).join("/")})),
+                sizePage: result.pageSize,
+                totalPages: result.totalPages,
+                totalCount: result.totalCount,
+            });
+        } catch (error) {
+            resolveResponse(error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        const initial = async () => {
+            if(event.id && modal) {
+                setValue("eventId", event.id);
+                getAll(1);
+            };
+        };
+        initial();
+    }, [event.id, modal]);
+
+    return (
+        <ModalV2 isOpen={modal} onClose={closeModal} title="Presença Participantes" size="xl">
+            <form className="flex flex-col p-6">
+                <div className="grid grid-cols-8 gap-4 max-h-[calc(100dvh-15rem)] overflow-y-auto">
+                    <div className="col-span-8">
+                        {
+                            pagination.data.map((x: any) => {
+                                return <EventParticipantCardPresence key={x.id} participant={x} open={openId === x.id} onToggle={() => setOpenId(openId === x.id ? null : x.id)} onSave={(obj) => confirm({...obj})} />
+                            })
+                        }
+                    </div>
+                </div>
+                <div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">
+                    <Button size="sm" variant="outline" onClick={closeModal}>Cancelar</Button>
+                    <Button size="sm" variant="primary" onClick={() => finish(event)}>Finalizar Evento</Button>
+                </div>
+            </form>
+        </ModalV2>    
+    )
+}

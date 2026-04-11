@@ -111,13 +111,9 @@ const AppSidebar: React.FC = () => {
       ${isMobileOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0`}
       onMouseEnter={() => !isExpanded && setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}>
-      <div className={`py-2 flex ${!isExpanded && !isHovered ? "lg:justify-center" : "justify-start"}`}>
-        <Link href={`${isAdmin ? '/dashboard' : '/master-data/profile'}`} className="w-full flex justify-center">
-          {isExpanded || isHovered || isMobileOpen ? (
-            <Logo width={150} height={150} />
-          ) : (
-            <Logo width={70} height={70} />
-          )}
+      <div className={`py-2 flex ${!isExpanded && !isHovered ? "lg:justify-center" : "lg:justify-start"}`}>
+        <Link href="/master-data/profile" className="w-full flex justify-center">
+          <Logo width={180} height={180} />
         </Link>
       </div>
 

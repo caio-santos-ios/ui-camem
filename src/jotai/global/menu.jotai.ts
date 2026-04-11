@@ -23,17 +23,37 @@ export const menuRoutinesAtom = atom<NavItem[]>([
     code: "B",
     path: "/master-data/users",
     subItems: [
-      {name: "Usuários",          path: "/master-data/users",          code: "B1", icon: "MdPeople", pro: false, authorized: false },
+      {name: "Usuários", path: "/master-data/users", code: "B1", icon: "MdPeople", pro: false, authorized: false },
     ]
   },
   {
     icon: "FiGrid",
     name: "Eventos",
     authorized: false,
-    code: "C",
+    code: "F",
     path: "/events",
     subItems: [
-      {name: "Eventos",          path: "/events",          code: "C1", pro: false, authorized: false },
+      {name: "Eventos", path: "/events",  code: "F1", icon: "MdEvent", pro: false, authorized: false },
+    ]
+  },
+  {
+    icon: "FiGrid",
+    name: "Certificados",
+    authorized: false,
+    code: "D",
+    path: "/certificates",
+    subItems: [
+      {name: "Certificados", path: "/certificates", code: "D1", icon: "MdBrush", pro: false, authorized: false },
+    ]
+  },
+  {
+    icon: "FiGrid",
+    name: "Meus Certificados",
+    authorized: false,
+    code: "E",
+    path: "/my-certificates",
+    subItems: [
+      {name: "Meus Certificados", path: "/my-certificates", code: "E1", icon: "MdWorkspacePremium", pro: false, authorized: false },
     ]
   }
 ]);

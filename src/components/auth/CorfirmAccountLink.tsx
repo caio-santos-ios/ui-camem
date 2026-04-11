@@ -51,7 +51,7 @@ export default function CorfirmAccountLink({code}: {code: string}) {
                 <h1 className="mb-1.5 block text-3xl font-medium text-gray-700 dark:text-gray-400">Falha ao confirmar conta</h1>
               }
             </div>
-            <Link href="/" className="text-brand-500 hover:text-brand-600 dark:text-brand-400"> 
+            <Link href="/signin" className="text-brand-500 hover:text-brand-600 dark:text-brand-400"> 
               Fazer login
             </Link>
           </form>
