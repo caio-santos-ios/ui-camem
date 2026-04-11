@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { FiEdit2, FiPlus } from "react-icons/fi";
 
 interface Props {
     options: any[];
@@ -17,78 +18,81 @@ export default function Autocomplete({ options, onSelect, onSearch, placeholder,
     const [searchTerm, setSearchTerm] = useState("");
     const [isOpen, setIsOpen] = useState(false);
     const wrapperRef = useRef<HTMLDivElement>(null);
+    const selectedRef = useRef(false);
 
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
-        if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
-            setIsOpen(false);
-        }
+            if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
+                setIsOpen(false);
+            }
         }
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
     useEffect(() => {
-        if(defaultValue == "empty") {
+        if (defaultValue === "empty") {
             setSearchTerm("");
         } else {
             setSearchTerm(defaultValue || "");
-        };
+        }
     }, [defaultValue]);
+
+    useEffect(() => {
+        if (selectedRef.current) {
+            selectedRef.current = false;
+            return;
+        }
+        setIsOpen(options.length > 0 && searchTerm.trim().length > 0);
+    }, [options, searchTerm]);
+
+    const handleSelect = (opt: any) => {
+        selectedRef.current = true;
+        setIsOpen(false);
+        setSearchTerm(opt[objValue]);
+        onSelect(opt);
+    };
 
     return (
         <div className="relative w-full" ref={wrapperRef}>
-            <div className="relative">
+            <div className="relative flex items-center">
                 <input
                     disabled={disabled}
                     type="text"
-                    className="input-erp-primary input-erp-default w-full pl-10"
+                    className="h-11 w-full rounded-lg border appearance-none py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3 focus:border-brand-300 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-(--erp-primary-color) bg-transparent text-gray-800 border-gray-300 focus:ring-brand-500/10 dark:border-gray-700 pl-4 pr-15"
                     placeholder={placeholder || "Buscar..."}
                     value={searchTerm}
                     onChange={(e) => {
-                        onSearch(e.target.value);
-                        setSearchTerm(e.target.value);
-                        setIsOpen(true);
+                        selectedRef.current = false;
+                        const value = e.target.value;
+                        setSearchTerm(value);
+                        if (!value.trim()) setIsOpen(false);
+                        onSearch(value);
                     }}
-                    onFocus={() => setIsOpen(true)}
                 />
             </div>
 
             {isOpen && options.length > 0 && (
                 <ul className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm dark:bg-gray-800">
                     {options.map((opt) => (
-                        <li key={opt[objKey]} className="relative cursor-pointer select-none py-2 pl-3 pr-9 text-gray-900 hover:bg-brand-500 hover:text-white dark:text-gray-200"
-                            onClick={() => {
-                                onSelect(opt);
-                                setSearchTerm(opt[objValue]);
-                                setIsOpen(false);
+                        <li
+                            key={opt[objKey]}
+                            className="relative cursor-pointer select-none py-2 pl-3 pr-9 text-gray-900 hover:bg-brand-500 hover:text-white dark:text-gray-200"
+                            onMouseDown={(e) => {
+                                e.preventDefault();
+                                handleSelect(opt);
                             }}
-                            >
-                            <div className="flex flex-col">
-                                <span className="font-semibold">{opt[objValue]} 
-                                    {
-                                        opt["isOutOfStock"] &&
-                                        <span> - <span className="text-red-400">SEM ESTOQUE</span></span>
-                                    }
-                                </span>
-                            </div>
+                        >
+                            <span className="font-semibold">
+                                {opt[objValue]}
+                                {opt["isOutOfStock"] && (
+                                    <span> - <span className="text-red-400">SEM ESTOQUE</span></span>
+                                )}
+                            </span>
                         </li>
                     ))}
                 </ul>
             )}
-{/* '
-            {searchTerm && (
-                <button 
-                    type="button"
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                    onClick={() => {
-                        setSearchTerm("");
-                        onSelect([]); 
-                    }}
-                >
-                    ✕
-                </button>
-            )}' */}
         </div>
     );
 }

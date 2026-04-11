@@ -58,7 +58,7 @@ export const DataTableCard = ({pagination, columns, changePage, actions, isActio
         <>
             <div className={`rounded-xl border border-gray-200 bg-white dark:border-white/5 dark:bg-white/3 mb-3`}>
                 <div className={`${heightContainer} max-w-full overflow-x-auto`}>
-                    <div className="min-w-[1102px] divide-y hidden md:block">
+                    <div className="divide-y hidden md:block">
                         <Table className="divide-y">
                             <TableHeader className="border-b border-gray-100 dark:border-white/5 tele-table-thead">
                                 <TableRow>

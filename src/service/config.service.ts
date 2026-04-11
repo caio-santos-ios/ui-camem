@@ -1,6 +1,5 @@
 import { modal403Atom } from "@/jotai/auth/auth.jotai";
 import { TDataLocal } from "@/types/auth/dataLocal.type";
-import { TUserLogged } from "@/types/master-data/user.type";
 import { getDefaultStore } from "jotai";
 import { toast } from "react-toastify";
 

@@ -24,21 +24,18 @@ export const getLoggedUserId = (): string => {
 export const getUserLogged = (): TUserLogged => {
     if (!isBrowser) return ResetUserLogged;
     
-    const id     = localStorage.getItem("telemovviId")     ?? "";
-    const admin  = localStorage.getItem("telemovviAdmin")  ?? "false";
-    const master = localStorage.getItem("telemovviMaster") ?? "false";
-
     const token = localStorage.getItem("telemovviToken") ?? "";
     if (!token) return ResetUserLogged;
-    const decoded = jwtDecode<JwtPayload>(token);
-    // console.log(decoded)
+
+    const decoded: any = jwtDecode<JwtPayload>(token);
+
     return {
-        email:  "",
-        name:   "",
-        photo:  "",
-        id,
-        admin:  admin  === "true",
-        master: master === "true",
-        role: ""
+        email:  decoded.email,
+        name:   decoded.name,
+        photo:  decoded.photo,
+        id: decoded.sub,
+        admin:  decoded.admin == "True",
+        master: decoded.master == "True",
+        role: decoded.role
     };
 };
