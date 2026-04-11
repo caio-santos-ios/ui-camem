@@ -107,7 +107,7 @@ export default function ResetPasswordForm({code}: TProps) {
             <p className="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start">
               Recuperou a senha?
               <Link
-                href="/"
+                href="/signin"
                 className="text-brand-500 hover:text-brand-600 dark:text-brand-400"
               > Entrar
               </Link>

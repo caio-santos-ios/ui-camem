@@ -4,6 +4,7 @@ export type TEvent = {
     description: string;
     startDate: any;
     endDate: any;
+    status: "Rascunho" | "Publicado";
 }
 
 export const ResetEvent: TEvent = {
@@ -12,10 +13,13 @@ export const ResetEvent: TEvent = {
     description: "",
     startDate: null,
     endDate: null,
+    status: "Rascunho"
 }
 export type TParticipantFunction = {
     name: string;
     hours: number;
+    isPresence: boolean;
+    notesPresence: string;
 };
 
 export type TEventParticipant = {

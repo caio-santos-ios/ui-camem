@@ -10,8 +10,7 @@ type TProp = {
 export const Logo = ({width, height}: TProp) => {
     return (
         <div>
-            {/* <img className="dark:hidden" src="/assets/images/logo.png" />
-            <img className="hidden dark:flex" src="/assets/images/logo-dark.png" /> */}
+            <img width={width} height={height} className="" src="/assets/images/logo.png" />
         </div>
     )
 }

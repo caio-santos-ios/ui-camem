@@ -19,7 +19,6 @@ export const EventModalCreate = () => {
     const [modal, setModal] = useAtom(eventModalAtom);
     const [__, setModalEventParticipant] = useAtom(eventParticipantModalAtom);
     const [event, setEvent] = useAtom(eventAtom);
-
     const { register, handleSubmit, reset, setValue, watch, getValues, formState: { errors }} = useForm<TEvent>({
         defaultValues: ResetEvent
     });
@@ -96,19 +95,20 @@ export const EventModalCreate = () => {
                 <div className="grid grid-cols-8 gap-x-6 gap-y-5">
                     <div className="col-span-8 md:col-span-4">
                         <Label title="Título"/>
-                        <input placeholder="Título" {...register("title")} type="text" className="input-erp-primary input-erp-default"/>
+                        <input disabled={event.status == "Publicado"} placeholder="Título" {...register("title")} type="text" className="input-erp-primary input-erp-default"/>
                     </div>
                     <div className="col-span-4 md:col-span-2">
                         <Label title="Data Inicial"/>
-                        <input {...register("startDate")} type="date" className="input-erp-primary input-erp-default" />
+                        <input disabled={event.status == "Publicado"} {...register("startDate")} type="date" className="input-erp-primary input-erp-default" />
                     </div>
                     <div className="col-span-4 md:col-span-2">
                         <Label title="Data Final" required={false}/>
-                        <input {...register("endDate")} type="date" className="input-erp-primary input-erp-default" />
+                        <input disabled={event.status == "Publicado"} {...register("endDate")} type="date" className="input-erp-primary input-erp-default" />
                     </div>
                     <div className="col-span-8">
                         <Label title="Descrição"/>
                         <RichTextEditor
+                            disabled={event.status == "Publicado"}
                             label=""
                             placeholder="Digite a descrição do evento..."
                             value={description}
@@ -120,7 +120,7 @@ export const EventModalCreate = () => {
                 <div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">
                     <Button size="sm" variant="outline" onClick={closeModal}>Cancelar</Button>
                     {event.id && <Button size="sm" variant="outline" onClick={() => {setModalEventParticipant(true)}}>Participantes</Button>}
-                    <Button size="sm" variant="primary" onClick={() => confirm(getValues())}>Confirmar</Button>
+                    {event.status == "Rascunho" && <Button size="sm" variant="primary" onClick={() => confirm(getValues())}>Confirmar</Button>}
                 </div>
             </form>
         </ModalV2>    

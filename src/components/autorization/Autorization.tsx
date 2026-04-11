@@ -24,7 +24,7 @@ export const Autorization = () => {
             setIsLoading(false);
 
             if(!["reset-password", "signup", "new-code-confirm", "confirm-account"].includes(pathname.split("/")[1])) {
-                router.push("/");
+                // router.push("/signin");
                 removeLocalStorage();
                 setIsAdmin(false);
             };
@@ -44,15 +44,15 @@ export const Autorization = () => {
             
             setIsAdmin(admin == 'true');
 
-            if(admin == "true") {
-                if(pathname == "/" || pathname == "/reset-password") {
-                    router.push("/dashboard");
-                };
-            } else {
-                if(pathname == "/" || pathname == "/reset-password") {
-                    router.push("/master-data/profile");
-                };
-            };
+        //     if(admin == "true") {
+        //         if(pathname == "/signin" || pathname == "/reset-password") {
+        //             router.push("/dashboard");
+        //         };
+        //     } else {
+        //         if(pathname == "/signin" || pathname == "/reset-password") {
+        //             router.push("/master-data/profile");
+        //         };
+        //     };
         };
     }, [pathname, router]);
 

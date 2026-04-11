@@ -13,12 +13,18 @@ import { ModalDelete } from "@/components/modal-delete/ModalDelete";
 import { NotData } from "@/components/not-data/NotData";
 import { EventModalCreate } from "./EventModalCreate";
 import { EventCard } from "./EventCard";
-import { eventAtom, eventModalAtom } from "@/jotai/event/event.jotai";
+import { eventAtom, eventModalAtom, eventParticipantModalPresenceAtom } from "@/jotai/event/event.jotai";
 import { ResetPagination } from "@/types/global/pagination.type";
-import { modalDeleteAtom } from "@/jotai/global/modal.jotai";
+import { modalConfirmAtom, modalDeleteAtom } from "@/jotai/global/modal.jotai";
 import Pagination from "@/components/tables/Pagination";
 import { EventParticipantModalCreate } from "./EventParticipantModalCreate";
 import { IconView } from "@/components/icons/global/iconView/IconView";
+import { IconEventPublish } from "@/components/icons/event/IconEventPublish";
+import { ModalConfirm } from "@/components/modal-confirm/ModalConfirm";
+import { ResetEvent } from "@/types/event/event.type";
+import { getUserLogged } from "@/utils/auth.util";
+import { EventParticipantModalCreatePresence } from "./EventParticipantModalCreatePresence";
+import { IconEventPresence } from "@/components/icons/event/IconEventPresence";
 
 const module = "F";
 const routine = "F1";
@@ -29,13 +35,19 @@ export default function EventTable() {
   const [event, setEvent] = useAtom(eventAtom);
   const [modal, setModal] = useAtom(eventModalAtom);
   const [modalDelete, setModalDelete] = useAtom(modalDeleteAtom);
+  const [modalConfirmPublish, setModalConfirmPublish] = useAtom(modalConfirmAtom);
+  const [__, setModalParticipantPresence] = useAtom(eventParticipantModalPresenceAtom);
+  const userLogged = getUserLogged();
 
   const getAll = async (page: number) => {
     try {
       setLoading(true);
-      const {data} = await api.get(`/events?deleted=false&orderBy=createdAt&sort=desc&pageSize=10&pageNumber=${page}`, configApi());
+      const isStudent = userLogged.role === "Student";
+      const studentFilter = isStudent ? `&in$userIds=${userLogged.id}&status=Publicado` : "";
+
+      const {data} = await api.get(`/events?deleted=false${studentFilter}&orderBy=createdAt&sort=desc&pageSize=10&pageNumber=${page}`, configApi());
       const result = data.result.data ?? ResetPagination;
-      
+
       setPagination({
         currentPage: result.currentPage,
         data: result.data,
@@ -56,6 +68,22 @@ export default function EventTable() {
       await api.delete(`/events/${event.id}`, configApi());
       resolveResponse({status: 204, message: "Excluído com sucesso"});
       setModalDelete(false);
+      setEvent(ResetEvent);
+      await getAll(pagination.currentPage);
+    } catch (error) {
+      resolveResponse(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  const publish = async () => {
+    try {
+      setLoading(true);
+      await api.put(`/events/publish/`, event, configApi());
+      resolveResponse({status: 200, message: "Publicado com sucesso"});
+      setModalConfirmPublish(false);
+      setEvent(ResetEvent);
       await getAll(pagination.currentPage);
     } catch (error) {
       resolveResponse(error);
@@ -68,7 +96,8 @@ export default function EventTable() {
     setEvent(obj);
 
     if(action == "edit" || action == "view") setModal(true);
-
+    if(action == "publish") setModalConfirmPublish(true);
+    if(action == "presence") setModalParticipantPresence(true);
     if(action == "delete") setModalDelete(true);
   };
 
@@ -100,15 +129,23 @@ export default function EventTable() {
                     actions={
                       <div className="flex gap-4">
                         {
-                          permissionRead(module, routine) &&
+                          permissionUpdate(module, routine) && obj.status == "Rascunho" &&
+                          <IconEventPublish action="publish" obj={obj} getObj={getObj}/>
+                        }
+                        {
+                          permissionRead(module, routine) && obj.status == "Publicado" && userLogged.role != "Student" &&
                           <IconView action="view" obj={obj} getObj={getObj}/>
                         }
                         {
-                          permissionUpdate(module, routine) &&
+                          permissionUpdate(module, routine) && obj.status == "Publicado" &&
+                          <IconEventPresence action="presence" obj={obj} getObj={getObj}/>
+                        }
+                        {
+                          permissionUpdate(module, routine) && obj.status == "Rascunho" &&
                           <IconEdit action="edit" obj={obj} getObj={getObj}/>
                         }
                         {
-                          permissionDelete(module, routine) &&
+                          permissionDelete(module, routine) && obj.status == "Rascunho" &&
                           <IconDelete action="delete" obj={obj} getObj={getObj}/> 
                         }
                       </div>
@@ -123,9 +160,11 @@ export default function EventTable() {
         :
         <NotData />
       }
-      <ModalDelete confirm={destroy} isOpen={modalDelete} closeModal={() => setModalDelete(false)} title="Excluir Evento" />
+      <ModalConfirm confirm={publish} isOpen={modalConfirmPublish} closeModal={() => { setModalConfirmPublish(false); setEvent(ResetEvent); }} title="Evento" description="Deseja publicar esse evento?" />
+      <ModalDelete confirm={destroy} isOpen={modalDelete} closeModal={() => { setModalDelete(false); setEvent(ResetEvent); }} title="Excluir Evento" />
       <EventModalCreate />
       <EventParticipantModalCreate />
+      <EventParticipantModalCreatePresence />
     </div>    
   );
 }

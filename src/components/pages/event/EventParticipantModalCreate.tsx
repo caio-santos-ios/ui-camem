@@ -38,7 +38,7 @@ export const EventParticipantModalCreate = () => {
     const [_, setLoading] = useAtom(loadingAtom);
     const [pagination, setPagination] = useState<TPagination>(ResetPagination);
     const [modal, setModal] = useAtom(eventParticipantModalAtom);
-    const [event, setEvent] = useAtom(eventAtom);
+    const [event] = useAtom(eventAtom);
     const [eventParticipant, setEventParticipant] = useAtom(eventParticipantAtom);
     const [users, setUsers] = useState<TUser[]>([]);
     const [modalDelete, setModalDelete] = useAtom(modalDeleteAtom);
@@ -64,6 +64,7 @@ export const EventParticipantModalCreate = () => {
     };
 
     const confirm = async (body: TEventParticipant) => {
+        setValue("eventId", event.id!);
         if(!body.id) {
             await create(body);
         } else {
@@ -216,68 +217,74 @@ export const EventParticipantModalCreate = () => {
         <ModalV2 isOpen={modal} onClose={closeModal} title="Participantes" size="xl">
             <form className="flex flex-col p-6">
                 <div className="grid grid-cols-8 gap-x-6 gap-y-5">
-                    <div className="col-span-8 md:col-span-4">
-                        <Label title="Usuário" required={false}/>
-                        <Autocomplete key={autocompleteKey} placeholder="Buscar Usuário..." defaultValue={userName} objKey="id" objValue="description" onSearch={(value: string) => getAutocompleUsers(value)} onSelect={(opt) => {
-                            setValue("userId", opt.id);
-                            setValue("name", opt.name)
-                            setUsers([]);
-                        }} options={users}/>
-                    </div>
-                    <div className="col-span-8 md:col-span-4">
-                        <Label title="Nome no Certificado"/>
-                        <input placeholder="Nome no Certificado" {...register("name")} type="text" className="input-erp-primary input-erp-default"/>
-                    </div>
-                    <div className="col-span-8">
-                        <div className="flex items-center justify-between mb-2">
-                            <Label title="Funções" required={false}/>
-                            <div className="flex gap-4">
-                                <Button size="sm" variant="primary" onClick={() => append({ name: "", hours: 0 })}>Adicionar função</Button>
-                                <Button size="sm" variant="outline" onClick={() => {
-                                    reset(ResetEventParticipant);
-                                    setEventParticipant(ResetEventParticipant);
-                                    setUsers([]);
-                                    setAutocompleteKey(prev => prev + 1); // ← força re-render
-                                }}>
-                                    {eventParticipantId ? 'Cancelar Alteração' : 'Cancelar Criação'}
-                                </Button>
-                                <Button size="sm" variant="primary" onClick={() => confirm(getValues())}>Salvar Participante</Button>
-                            </div>
-                        </div>
+                    {
+                        event.status == "Rascunho" && (
+                            <>
+                                <div className="col-span-8 md:col-span-4">
+                                    <Label title="Usuário" required={false}/>
+                                    <Autocomplete key={autocompleteKey} placeholder="Buscar Usuário..." defaultValue={userName} objKey="id" objValue="description" onSearch={(value: string) => getAutocompleUsers(value)} onSelect={(opt) => {
+                                        setValue("userId", opt.id);
+                                        setValue("name", opt.name)
+                                        setUsers([]);
+                                    }} options={users}/>
+                                </div>
+                                <div className="col-span-8 md:col-span-4">
+                                    <Label title="Nome no Certificado"/>
+                                    <input placeholder="Nome no Certificado" {...register("name")} type="text" className="input-erp-primary input-erp-default"/>
+                                </div>
+                                <div className="col-span-8">
+                                    <div className="flex items-center justify-between mb-2">
+                                        <Label title="Funções" required={false}/>
+                                        <div className="flex gap-4">
+                                            <Button size="sm" variant="primary" onClick={() => append({ name: "", hours: 0, isPresence: true, notesPresence: "" })}>Adicionar função</Button>
+                                            <Button size="sm" variant="outline" onClick={() => {
+                                                reset(ResetEventParticipant);
+                                                setEventParticipant(ResetEventParticipant);
+                                                setUsers([]);
+                                                setAutocompleteKey(prev => prev + 1);
+                                            }}>
+                                                {eventParticipantId ? 'Cancelar Alteração' : 'Cancelar Criação'}
+                                            </Button>
+                                            <Button size="sm" variant="primary" onClick={() => confirm(getValues())}>Salvar Participante</Button>
+                                        </div>
+                                    </div>
 
-                        <div className="flex flex-col gap-2">
-                        {fields.map((field, index) => (
-                            <div key={field.id} className="grid grid-cols-8 gap-3 items-center">
-                                <div className="col-span-4">
-                                    <input {...register(`functions.${index}.name`)} placeholder="Nome da função" className="input-erp-primary input-erp-default" />
-                                </div>
-                                <div className="col-span-2">
-                                    <input {...register(`functions.${index}.hours`, { valueAsNumber: true })} type="number" placeholder="Horas" className="input-erp-primary input-erp-default" />
-                                </div>
-                                <div className="col-span-1 flex justify-end">
-                                    <IconDelete action="delete" getObj={() => remove(index)} obj={{}}/>
-                                </div>
-                            </div>
-                        ))}
-                        </div>
+                                    <div className="flex flex-col gap-2">
+                                    {fields.map((field, index) => (
+                                        <div key={field.id} className="grid grid-cols-8 gap-3 items-center">
+                                            <div className="col-span-4">
+                                                <input {...register(`functions.${index}.name`)} placeholder="Nome da função" className="input-erp-primary input-erp-default" />
+                                            </div>
+                                            <div className="col-span-2">
+                                                <input {...register(`functions.${index}.hours`, { valueAsNumber: true })} type="number" placeholder="Horas" className="input-erp-primary input-erp-default" />
+                                            </div>
+                                            <div className="col-span-1 flex justify-end">
+                                                <IconDelete action="delete" getObj={() => remove(index)} obj={{}}/>
+                                            </div>
+                                        </div>
+                                    ))}
+                                    </div>
 
-                        {fields.length === 0 && (
-                            <p className="text-xs text-gray-400 dark:text-gray-600 py-2">
-                                Nenhuma função adicionada.
-                            </p>
-                        )}
-                    </div>
+                                    {fields.length === 0 && (
+                                        <p className="text-xs text-gray-400 dark:text-gray-600 py-2">
+                                            Nenhuma função adicionada.
+                                        </p>
+                                    )}
+                                </div>
+                            </>
+                        )
+                    }
                     <div className="col-span-8">
                         {
                             pagination.data.length > 0 ? 
-                                <DataTableCard heightContainer="max-h-[calc(100dvh-24rem)]" isActions={permissionUpdate(module, routine) || permissionDelete(module, routine)} pagination={pagination} columns={columns} changePage={changePage} actions={(obj) => (
+                                <DataTableCard heightContainer="max-h-[calc(100dvh-24rem)]" isActions={(permissionUpdate(module, routine) || permissionDelete(module, routine)) && event.status == "Rascunho"} pagination={pagination} columns={columns} changePage={changePage} actions={(obj) => (
                                     <>
                                     {
-                                        permissionUpdate(module, routine) &&
+                                        permissionUpdate(module, routine) && event.status == "Rascunho" &&
                                         <IconEdit action="edit" obj={obj} getObj={getObj}/>
                                     }
                                     {
-                                        permissionDelete(module, routine) &&
+                                        permissionDelete(module, routine) && event.status == "Rascunho" &&
                                         <IconDelete action="delete" obj={obj} getObj={getObj}/> 
                                     }
                                     </>

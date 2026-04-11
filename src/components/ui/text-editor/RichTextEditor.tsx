@@ -182,6 +182,7 @@ type RichTextEditorProps = {
   minHeight?: number;
   label?: string;
   height?: number;
+  disabled?: boolean;
 };
 
 export const RichTextEditor = ({
@@ -190,23 +191,25 @@ export const RichTextEditor = ({
   placeholder = "Digite aqui...",
   minHeight = 220,
   label,
-  height = 400
+  height = 400,
+  disabled = false
 }: RichTextEditorProps) => {
     const editor = useEditor({
-        immediatelyRender: false, // ← adicione essa linha
+        immediatelyRender: false,
+        editable: !disabled,
         extensions: [
-            StarterKit,
-            Underline,
-            TextAlign.configure({ types: ["heading", "paragraph"] }),
-            Link.configure({ openOnClick: false }),
-            Placeholder.configure({ placeholder }),
+          StarterKit,
+          Underline,
+          TextAlign.configure({ types: ["heading", "paragraph"] }),
+          Link.configure({ openOnClick: false }),
+          Placeholder.configure({ placeholder }),
         ],
         content: value,
         onUpdate: ({ editor }) => onChange?.(editor.getHTML()),
         editorProps: {
-            attributes: {
-                class: "prose prose-sm dark:prose-invert max-w-none focus:outline-none px-4 py-3 text-gray-900 dark:text-gray-100",
-            },
+          attributes: {
+            class: "prose prose-sm dark:prose-invert max-w-none focus:outline-none px-4 py-3 text-gray-900 dark:text-gray-100",
+          },
         },
     });
 
@@ -236,68 +239,72 @@ export const RichTextEditor = ({
         <div className="flex flex-col w-full">
             {label && <label className="mb-1.5 text-sm font-medium text-gray-700 dark:text-gray-300">{label}</label> }
             <div className="rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 overflow-hidden focus-within:ring-2 focus-within:ring-brand-500 focus-within:border-brand-500 transition-all duration-200">
-                <div className="flex flex-wrap items-center gap-0.5 px-3 py-2 border-b border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/60">
-                    <HeadingSelect editor={editor} />
+                {
+                  !disabled && (
+                    <div className="flex flex-wrap items-center gap-0.5 px-3 py-2 border-b border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/60">
+                        <HeadingSelect editor={editor} />
 
-                    <Divider />
+                        <Divider />
 
-                    <ToolbarButton onClick={() => editor.chain().focus().toggleBold().run()} active={editor.isActive("bold")} title="Negrito (Ctrl+B)">
-                        <BoldIcon />
-                    </ToolbarButton>
-                    <ToolbarButton onClick={() => editor.chain().focus().toggleItalic().run()} active={editor.isActive("italic")} title="Itálico (Ctrl+I)">
-                        <ItalicIcon />
-                    </ToolbarButton>
-                    <ToolbarButton onClick={() => editor.chain().focus().toggleUnderline().run()} active={editor.isActive("underline")} title="Sublinhado (Ctrl+U)">
-                        <UnderlineIcon />
-                    </ToolbarButton>
-                    <ToolbarButton onClick={() => editor.chain().focus().toggleStrike().run()} active={editor.isActive("strike")} title="Tachado">
-                        <StrikeIcon />
-                    </ToolbarButton>
+                        <ToolbarButton onClick={() => editor.chain().focus().toggleBold().run()} active={editor.isActive("bold")} title="Negrito (Ctrl+B)">
+                            <BoldIcon />
+                        </ToolbarButton>
+                        <ToolbarButton onClick={() => editor.chain().focus().toggleItalic().run()} active={editor.isActive("italic")} title="Itálico (Ctrl+I)">
+                            <ItalicIcon />
+                        </ToolbarButton>
+                        <ToolbarButton onClick={() => editor.chain().focus().toggleUnderline().run()} active={editor.isActive("underline")} title="Sublinhado (Ctrl+U)">
+                            <UnderlineIcon />
+                        </ToolbarButton>
+                        <ToolbarButton onClick={() => editor.chain().focus().toggleStrike().run()} active={editor.isActive("strike")} title="Tachado">
+                            <StrikeIcon />
+                        </ToolbarButton>
 
-                    <Divider />
+                        <Divider />
 
-                    <ToolbarButton onClick={() => editor.chain().focus().toggleBulletList().run()} active={editor.isActive("bulletList")} title="Lista">
-                        <BulletListIcon />
-                    </ToolbarButton>
-                    <ToolbarButton onClick={() => editor.chain().focus().toggleOrderedList().run()} active={editor.isActive("orderedList")} title="Lista numerada">
-                        <OrderedListIcon />
-                    </ToolbarButton>
-                    <ToolbarButton onClick={() => editor.chain().focus().toggleBlockquote().run()} active={editor.isActive("blockquote")} title="Citação">
-                        <QuoteIcon />
-                    </ToolbarButton>
+                        <ToolbarButton onClick={() => editor.chain().focus().toggleBulletList().run()} active={editor.isActive("bulletList")} title="Lista">
+                            <BulletListIcon />
+                        </ToolbarButton>
+                        <ToolbarButton onClick={() => editor.chain().focus().toggleOrderedList().run()} active={editor.isActive("orderedList")} title="Lista numerada">
+                            <OrderedListIcon />
+                        </ToolbarButton>
+                        <ToolbarButton onClick={() => editor.chain().focus().toggleBlockquote().run()} active={editor.isActive("blockquote")} title="Citação">
+                            <QuoteIcon />
+                        </ToolbarButton>
 
-                    <Divider />
+                        <Divider />
 
-                    <ToolbarButton onClick={() => editor.chain().focus().setTextAlign("left").run()} active={editor.isActive({ textAlign: "left" })} title="Alinhar à esquerda">
-                        <AlignLeftIcon />
-                    </ToolbarButton>
-                    <ToolbarButton onClick={() => editor.chain().focus().setTextAlign("center").run()} active={editor.isActive({ textAlign: "center" })} title="Centralizar">
-                        <AlignCenterIcon />
-                    </ToolbarButton>
-                    <ToolbarButton onClick={() => editor.chain().focus().setTextAlign("right").run()} active={editor.isActive({ textAlign: "right" })} title="Alinhar à direita">
-                        <AlignRightIcon />
-                    </ToolbarButton>
+                        <ToolbarButton onClick={() => editor.chain().focus().setTextAlign("left").run()} active={editor.isActive({ textAlign: "left" })} title="Alinhar à esquerda">
+                            <AlignLeftIcon />
+                        </ToolbarButton>
+                        <ToolbarButton onClick={() => editor.chain().focus().setTextAlign("center").run()} active={editor.isActive({ textAlign: "center" })} title="Centralizar">
+                            <AlignCenterIcon />
+                        </ToolbarButton>
+                        <ToolbarButton onClick={() => editor.chain().focus().setTextAlign("right").run()} active={editor.isActive({ textAlign: "right" })} title="Alinhar à direita">
+                            <AlignRightIcon />
+                        </ToolbarButton>
 
-                    <Divider />
+                        <Divider />
 
-                    <ToolbarButton onClick={setLink} active={editor.isActive("link")} title="Inserir link">
-                        <LinkIcon />
-                    </ToolbarButton>
-                    <ToolbarButton onClick={() => editor.chain().focus().setHorizontalRule().run()} title="Linha horizontal">
-                        <HRIcon />
-                    </ToolbarButton>
+                        <ToolbarButton onClick={setLink} active={editor.isActive("link")} title="Inserir link">
+                            <LinkIcon />
+                        </ToolbarButton>
+                        <ToolbarButton onClick={() => editor.chain().focus().setHorizontalRule().run()} title="Linha horizontal">
+                            <HRIcon />
+                        </ToolbarButton>
 
-                    <Divider />
+                        <Divider />
 
-                    <ToolbarButton onClick={() => editor.chain().focus().undo().run()} disabled={!editor.can().undo()} title="Desfazer (Ctrl+Z)">
-                        <UndoIcon />
-                    </ToolbarButton>
-                    <ToolbarButton onClick={() => editor.chain().focus().redo().run()} disabled={!editor.can().redo()} title="Refazer (Ctrl+Y)">
-                        <RedoIcon />
-                    </ToolbarButton>
-                </div>
-                <div style={{ height: height ?? 220, overflowY: "auto", minHeight }}>
-                    <EditorContent editor={editor} />
+                        <ToolbarButton onClick={() => editor.chain().focus().undo().run()} disabled={!editor.can().undo()} title="Desfazer (Ctrl+Z)">
+                            <UndoIcon />
+                        </ToolbarButton>
+                        <ToolbarButton onClick={() => editor.chain().focus().redo().run()} disabled={!editor.can().redo()} title="Refazer (Ctrl+Y)">
+                            <RedoIcon />
+                        </ToolbarButton>
+                    </div>
+                  )
+                }
+                <div style={{ height: height ?? 220, overflowY: "auto", minHeight }} className={disabled ? "opacity-60 pointer-events-none select-none" : ""}>
+                  <EditorContent editor={editor} />
                 </div>
             </div>
         </div>
