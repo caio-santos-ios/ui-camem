@@ -97,8 +97,12 @@ export default function UserTable() {
   const getCount = async () => {
     try {
       setLoading(true);
+      let query = "";
+      if(!userLogged.master) {
+        query += "&master=false&admin=false";
+      }
 
-      const {data} = await api.get(`/users/count?deleted=false`, configApi());
+      const {data} = await api.get(`/users/count?deleted=false${query}`, configApi());
       const result = data.result.data;
       const countPending = result.filter((x: any) => x.statusAccess == "Pendente");
       const countApprove = result.filter((x: any) => x.statusAccess == "Aprovado");
