@@ -13,7 +13,6 @@ import Button from "@/components/ui/button/Button";
 import { ResetTemplate, TTemplate } from "@/types/setting/template.type";
 import { permissionRead, permissionUpdate } from "@/utils/permission.util";
 import dynamic from "next/dynamic";
-import ModalV2 from "@/components/ui/modalV2";
 import { TemplateModalPreview } from "./TemplateModalPreview";
 import { templateAtom, templateModalPreviewAtom } from "@/jotai/settings/template.jotai";
 
@@ -28,9 +27,8 @@ const MonacoEditor = dynamic(() => import("@monaco-editor/react"), { ssr: false 
 
 export default function TemplateForm({id}: TProp) {
   const [_, setLoading] = useAtom(loadingAtom);
-  const [previewOpen, setPreviewOpen] = useState(false);
-  const [template, setTemplate] = useAtom(templateAtom);
-  const [__, setPreviewTemplateModal] = useAtom(templateModalPreviewAtom);
+  const [__, setTemplate] = useAtom(templateAtom);
+  const [___, setPreviewTemplateModal] = useAtom(templateModalPreviewAtom);
   const [mounted, setMounted] = useState(false);
 
   const router = useRouter();
@@ -123,23 +121,6 @@ export default function TemplateForm({id}: TProp) {
           <div className="col-span-6">
             <Label title="HTML"/>
             <div className="rounded-lg overflow-hidden border border-gray-300 dark:border-gray-700">
-              {/* <MonacoEditor
-                height={'450px'}
-                language="html"
-                theme="vs-dark"
-                value={watch("html")}
-                onChange={(value) => setValue("html", value ?? "")}
-                options={{
-                  minimap: { enabled: false },
-                  fontSize: 14,
-                  wordWrap: "on",
-                  formatOnPaste: true,
-                  formatOnType: true,
-                  automaticLayout: true,
-                  scrollBeyondLastLine: false,
-                  tabSize: 2,
-                }}
-              /> */}
               {mounted && (
                 <MonacoEditor
                   height={'450px'}

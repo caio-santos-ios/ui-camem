@@ -36,6 +36,10 @@ export const getUserLogged = (): TUserLogged => {
         id: decoded.sub,
         admin:  decoded.admin == "True",
         master: decoded.master == "True",
-        role: decoded.role
+        role: decoded.role,
+        cpf: decoded.cpf,
+        blocked: decoded.blocked,
+        ra: decoded.ra,
+        statusAccess: decoded.statusAccess
     };
 };

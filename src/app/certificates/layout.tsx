@@ -6,7 +6,7 @@ import AppSidebar from "@/layout/AppSidebar";
 import Backdrop from "@/layout/Backdrop";
 import React from "react";
 
-export default function DashboardLayout({
+export default function CerticateLayout({
   children,
 }: {
   children: React.ReactNode;

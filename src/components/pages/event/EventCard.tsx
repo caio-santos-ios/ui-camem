@@ -72,7 +72,7 @@ export const EventCard = ({ id, title, description, participants, startDate, end
                     <div className="flex justify-between w-full">
                         <span className="text-xs text-gray-400 dark:text-gray-500">{participants.length} participante{participants.length !== 1 ? "s" : ""}</span>
                         <div className={`flex items-center gap-4`}>
-                            <span className={`px-2 rounded-xl text-sm ${statusLabel[status].className ?? ''}`}>{statusLabel[status].label ?? ''}</span>
+                            <span className={`px-2 rounded-xl text-sm ${statusLabel[status]?.className ?? ''}`}>{statusLabel[status]?.label ?? ''}</span>
                             {actions}
                         </div>
                     </div>

@@ -1,14 +1,16 @@
 "use client";
 
 import { Footer } from "@/components/ui/footer/Footer";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function CertificadosPage() {
-  const [token, setToken] = useState("");
+  const [keyCertificate, setKeyCertificate] = useState("");
+  const router = useRouter();
 
   const handleVerify = () => {
-    if (!token.trim()) return;
-    window.open(`https://camem.org.br/certificados/?hash=${token.trim()}`, "_blank");
+    if (!keyCertificate.trim()) return;
+    router.push(`/certificates-validate/${keyCertificate}`)
   };
 
   return (
@@ -35,7 +37,7 @@ export default function CertificadosPage() {
             </span>
           </h1>
           <p className="text-base sm:text-lg text-gray-500 dark:text-gray-400 leading-relaxed max-w-2xl">
-            Valide certificados e outros documentos emitidos pelo CAMEM informando o token de validação ou escaneando o QR code impresso no documento.
+            Valide certificados e outros documentos emitidos pelo CAMEM informando o keyCertificate de validação ou escaneando o QR code impresso no documento.
           </p>
         </div>
       </section>
@@ -53,8 +55,8 @@ export default function CertificadosPage() {
             <div className="flex gap-2">
               <input
                 type="text"
-                value={token}
-                onChange={(e) => setToken(e.target.value)}
+                value={keyCertificate}
+                onChange={(e) => setKeyCertificate(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleVerify()}
                 placeholder="Cole o código de autenticidade aqui..."
                 className="flex-1 px-4 py-2.5 text-sm rounded-xl border border-gray-200 dark:border-gray-700 bg-[#f2faf9] dark:bg-gray-800 text-gray-700 dark:text-gray-300 placeholder-gray-400 dark:placeholder-gray-600 outline-none focus:border-[#1f544b] focus:ring-2 focus:ring-[#1f544b]/10 transition-all"
@@ -86,7 +88,7 @@ export default function CertificadosPage() {
                 <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#2a8e84] shrink-0" />
                 <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
                   <strong className="text-gray-700 dark:text-gray-300">Demais documentos:</strong>{" "}
-                  podem ser validados pelo QR code impresso no documento ou informando o token de validação acima.
+                  podem ser validados pelo QR code impresso no documento ou informando o keyCertificate de validação acima.
                 </p>
               </li>
             </ul>

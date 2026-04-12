@@ -73,14 +73,13 @@ export default function UserMetaCard() {
 
   const normalizeName = (name: string) => name?.slice(0, 1).toUpperCase() ?? "";
 
-  const status  = user?.statusAccess ?? userLogged?.statusAccess ?? "";
-  const blocked = user?.blocked      ?? userLogged?.blocked      ?? false;
-  const role    = user?.role         ?? userLogged?.role         ?? "";
-  const ra      = user?.ra           ?? userLogged?.ra           ?? "";
-  const cpf     = user?.cpf          ?? userLogged?.cpf          ?? "";
-  const photo   = user?.photo        ?? userLogged?.photo        ?? "";
-  const name    = user?.name         ?? userLogged?.name         ?? "";
-  const email   = user?.email        ?? userLogged?.email        ?? "";
+  // const blocked = user?.blocked      ?? userLogged?.blocked      ?? false;
+  // const role    = user?.role         ?? userLogged?.role         ?? "";
+  // const ra      = user?.ra           ?? userLogged?.ra           ?? "";
+  // const cpf     = user?.cpf          ?? userLogged?.cpf          ?? "";
+  // const photo   = user?.photo        ?? userLogged?.photo        ?? "";
+  // const name    = user?.name         ?? userLogged?.name         ?? "";
+  // const email   = user?.email        ?? userLogged?.email        ?? "";
 
   useEffect(() => {
     getById();
@@ -99,16 +98,16 @@ export default function UserMetaCard() {
                 onClick={() => fileInputRef.current?.click()}
                 className="w-24 h-24 rounded-full overflow-hidden border-2 border-gray-200 dark:border-gray-700 cursor-pointer ring-2 ring-offset-2 ring-transparent hover:ring-brand-500 dark:ring-offset-gray-900 transition-all"
               >
-                {photo ? (
+                {userLogged.photo ? (
                   <img
-                    src={photo}
+                    src={userLogged.photo}
                     alt="Foto do usuário"
                     className="w-full h-full object-cover"
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center bg-brand-50 dark:bg-brand-900/20">
                     <span className="text-3xl font-bold text-brand-600 dark:text-brand-400">
-                      {normalizeName(name)}
+                      {normalizeName(userLogged.name)}
                     </span>
                   </div>
                 )}
@@ -135,35 +134,35 @@ export default function UserMetaCard() {
             <div className="flex flex-col gap-2 min-w-0 text-center sm:text-left">
               <div className="flex flex-col sm:flex-row sm:items-center gap-2 flex-wrap justify-center sm:justify-start">
                 <h4 className="text-lg font-semibold text-gray-900 dark:text-white truncate">
-                  {name}
+                  {userLogged.name}
                 </h4>
               </div>
 
-              <p className="text-sm text-gray-500 dark:text-gray-400 truncate">{email}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 truncate">{userLogged.email}</p>
 
               <div className="flex flex-wrap gap-3 justify-center sm:justify-start mt-1">
-                {role && (
+                {userLogged.role && (
                   <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
                     </svg>
-                    {roleLabel[role] ?? role}
+                    {roleLabel[userLogged.role] ?? userLogged.role}
                   </div>
                 )}
-                {ra && (
+                {userLogged.ra && (
                   <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/>
                     </svg>
-                    RA: {ra}
+                    RA: {userLogged.ra}
                   </div>
                 )}
-                {cpf && (
+                {userLogged.cpf && (
                   <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/>
                     </svg>
-                    CPF: {cpf}
+                    CPF: {userLogged.cpf}
                   </div>
                 )}
               </div>

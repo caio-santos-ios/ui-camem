@@ -36,14 +36,14 @@ export default function EventTable() {
   const [modal, setModal] = useAtom(eventModalAtom);
   const [modalDelete, setModalDelete] = useAtom(modalDeleteAtom);
   const [modalConfirmPublish, setModalConfirmPublish] = useAtom(modalConfirmAtom);
-  const [__, setModalParticipantPresence] = useAtom(eventParticipantModalPresenceAtom);
+  const [modalParticipantPresence, setModalParticipantPresence] = useAtom(eventParticipantModalPresenceAtom);
   const userLogged = getUserLogged();
 
   const getAll = async (page: number) => {
     try {
       setLoading(true);
       const isStudent = userLogged.role === "Student";
-      const studentFilter = isStudent ? `&in$userIds=${userLogged.id}&status=Publicado` : "";
+      const studentFilter = isStudent ? `&in$userIds=${userLogged.id}&in$status=Publicado,Finalizado` : "";
 
       const {data} = await api.get(`/events?deleted=false${studentFilter}&orderBy=createdAt&sort=desc&pageSize=10&pageNumber=${page}`, configApi());
       const result = data.result.data ?? ResetPagination;
@@ -114,7 +114,7 @@ export default function EventTable() {
     if(permissionRead(module, routine)) {
       getAll(1);
     };
-  }, [modal]);
+  }, [modal, modalParticipantPresence, modalConfirmPublish]);
 
   return (
     <div>
