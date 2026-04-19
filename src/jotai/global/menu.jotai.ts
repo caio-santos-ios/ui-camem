@@ -38,12 +38,12 @@ export const menuRoutinesAtom = atom<NavItem[]>([
   },
   {
     icon: "FiGrid",
-    name: "Certificados",
+    name: "Customizar Certificados",
     authorized: false,
     code: "D",
-    path: "/certificates",
+    path: "/custom-certificates",
     subItems: [
-      {name: "Certificados", path: "/certificates", code: "D1", icon: "MdBrush", pro: false, authorized: false },
+      {name: "Customizar Certificados", path: "/custom-certificates", code: "D1", icon: "MdBrush", pro: false, authorized: false },
     ]
   },
   {

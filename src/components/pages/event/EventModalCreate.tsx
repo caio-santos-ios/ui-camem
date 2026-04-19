@@ -1,14 +1,16 @@
 "use client";
 
+import { CoverPhotoUpload } from "@/components/form/CoverPhotoUpload";
 import Label from "@/components/form/Label";
 import Button from "@/components/ui/button/Button";
 import ModalV2 from "@/components/ui/modalV2"
 import RichTextEditor from "@/components/ui/text-editor/RichTextEditor";
-import { eventAtom, eventModalAtom, eventParticipantModalAtom } from "@/jotai/event/event.jotai";
+import { eventAtom, eventModalAtom, eventParticipanFunctiontModalAtom, eventParticipantModalAtom } from "@/jotai/event/event.jotai";
 import { loadingAtom } from "@/jotai/global/loading.jotai";
 import { api } from "@/service/api.service";
 import { configApi, resolveResponse } from "@/service/config.service";
 import { ResetEvent, TEvent } from "@/types/event/event.type";
+import { convertObjFormData } from "@/utils/convert.util";
 import { toISOOrNull } from "@/utils/mask.util";
 import { useAtom } from "jotai";
 import { useEffect } from "react";
@@ -18,12 +20,14 @@ export const EventModalCreate = () => {
     const [_, setLoading] = useAtom(loadingAtom);
     const [modal, setModal] = useAtom(eventModalAtom);
     const [__, setModalEventParticipant] = useAtom(eventParticipantModalAtom);
+    const [___, setModalEventParticipantFunction] = useAtom(eventParticipanFunctiontModalAtom);
     const [event, setEvent] = useAtom(eventAtom);
-    const { register, handleSubmit, reset, setValue, watch, getValues, formState: { errors }} = useForm<TEvent>({
+    const { register, reset, setValue, watch, getValues } = useForm<TEvent>({
         defaultValues: ResetEvent
     });
 
     const description = watch("description");
+    const photo = watch("photo");
 
     const closeModal = () => {
         setModal(false);
@@ -47,7 +51,8 @@ export const EventModalCreate = () => {
             setLoading(true);
             const {data} = await api.post(`/events`, body, configApi());
             resolveResponse({status: 201, message: data.result.message});
-            closeModal();
+            setEvent(data?.result?.data);
+            await getById(data?.result?.data?.id);
         } catch (error) {
             resolveResponse(error);
         } finally {
@@ -59,6 +64,32 @@ export const EventModalCreate = () => {
         try {
             setLoading(true);
             const {data} = await api.put(`/events`, body, configApi());
+            resolveResponse({status: 200, message: data.result.message});
+            closeModal();
+        } catch (error) {
+            resolveResponse(error);
+        } finally {
+            setLoading(false);
+        }
+    };
+    
+    const savePhoto: SubmitHandler<File> = async (file: File) => {
+        try {
+            setLoading(true);
+            const form = convertObjFormData({id: event.id, photo: file});
+            const {data} = await api.put(`/events/save-photo`, form, configApi(false));
+            resolveResponse({status: 200, message: data.result.message});
+        } catch (error) {
+            resolveResponse(error);
+        } finally {
+            setLoading(false);
+        }
+    };
+    
+    const saveRemove: SubmitHandler<TEvent> = async (event: TEvent) => {
+        try {
+            setLoading(true);
+            const {data} = await api.put(`/events/remove-photo`, event, configApi(false));
             resolveResponse({status: 200, message: data.result.message});
             closeModal();
         } catch (error) {
@@ -92,7 +123,14 @@ export const EventModalCreate = () => {
     return (
         <ModalV2 isOpen={modal} onClose={closeModal} title="Evento" size="lg">
             <form className="flex flex-col p-6">
-                <div className="grid grid-cols-8 gap-x-6 gap-y-5">
+                <div className="grid grid-cols-8 gap-x-6 gap-y-5 max-h-[calc(100dvh-13rem)] overflow-y-auto px-2">
+                    <div className="col-span-8">
+                        {
+                            watch("id") && (
+                                <CoverPhotoUpload value={photo} onChange={(file) => savePhoto(file)} removeImg={() => saveRemove({...getValues()})} disabled={event.status == "Publicado"} />
+                            )
+                        }
+                    </div>
                     <div className="col-span-8 md:col-span-4">
                         <Label title="Título"/>
                         <input disabled={event.status == "Publicado"} placeholder="Título" {...register("title")} type="text" className="input-erp-primary input-erp-default"/>
@@ -119,6 +157,7 @@ export const EventModalCreate = () => {
                 </div>
                 <div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">
                     <Button size="sm" variant="outline" onClick={closeModal}>Cancelar</Button>
+                    {event.id && <Button size="sm" variant="outline" onClick={() => {setModalEventParticipantFunction(true)}}>Funções</Button>}
                     {event.id && <Button size="sm" variant="outline" onClick={() => {setModalEventParticipant(true)}}>Participantes</Button>}
                     {event.status == "Rascunho" && <Button size="sm" variant="primary" onClick={() => confirm(getValues())}>Confirmar</Button>}
                 </div>

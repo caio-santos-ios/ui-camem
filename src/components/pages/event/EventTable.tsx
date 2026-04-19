@@ -25,6 +25,7 @@ import { ResetEvent } from "@/types/event/event.type";
 import { getUserLogged } from "@/utils/auth.util";
 import { EventParticipantModalCreatePresence } from "./EventParticipantModalCreatePresence";
 import { IconEventPresence } from "@/components/icons/event/IconEventPresence";
+import { EventParticipantFunctionModalCreate } from "./EventParticipantFunctionModalCreate";
 
 const module = "F";
 const routine = "F1";
@@ -125,7 +126,7 @@ export default function EventTable() {
             {
               pagination.data.map((obj: any) => {
                 return (
-                  <EventCard key={obj.id} id={obj.id} title={obj.title} description={obj.description} startDate={obj.startDate} endDate={obj.endDate} participants={obj.participants ?? []} status={obj.status}
+                  <EventCard key={obj.id} id={obj.id} title={obj.title} description={obj.description} startDate={obj.startDate} endDate={obj.endDate} participants={obj.participants ?? []} status={obj.status} photo={obj.photo}
                     actions={
                       <div className="flex gap-4">
                         {
@@ -165,6 +166,7 @@ export default function EventTable() {
       <EventModalCreate />
       <EventParticipantModalCreate />
       <EventParticipantModalCreatePresence />
+      <EventParticipantFunctionModalCreate />
     </div>    
   );
 }

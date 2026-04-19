@@ -1,3 +1,21 @@
+export type TUserSettingNotification = {
+    newEventPush: boolean;
+    newEventMail: boolean;
+    newCertificatePush: boolean;
+    newCertificateMail: boolean;
+    newUserPush: boolean;
+    newUserMail: boolean;
+}
+
+export const ResetUserSettingNotification: TUserSettingNotification = {
+    newEventPush: true,
+    newEventMail: true,
+    newCertificatePush: true,
+    newCertificateMail: true,
+    newUserPush: true,
+    newUserMail: true
+}
+
 export type TUser = {
     id: string;
     name: string;
@@ -10,6 +28,7 @@ export type TUser = {
     blocked: boolean;
     role: string;
     photo: string;
+    settingNotification: TUserSettingNotification;
 }
 
 export const ResetUser: TUser = {
@@ -23,9 +42,9 @@ export const ResetUser: TUser = {
     ra: "",
     blocked: false,
     photo: "",
-    role: ""
+    role: "",
+    settingNotification: ResetUserSettingNotification
 }
-
 
 export type TUserResetPassword = {
     id: string;
@@ -49,6 +68,7 @@ export type TUserProfile = {
     cpf: string;
     ra: string;
     photo: string;
+    settingNotification: TUserSettingNotification;
 }
 
 export const ResetUserProfile: TUserProfile = {
@@ -58,7 +78,8 @@ export const ResetUserProfile: TUserProfile = {
     password: "",
     cpf: "",
     ra: "",
-    photo: ""
+    photo: "",
+    settingNotification: ResetUserSettingNotification
 }
 
 export type TUserLogged = {

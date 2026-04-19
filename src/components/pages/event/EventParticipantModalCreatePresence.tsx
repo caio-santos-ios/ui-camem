@@ -20,7 +20,7 @@ export const EventParticipantModalCreatePresence = () => {
     const [event, setEvent] = useAtom(eventAtom);
     const [openId, setOpenId] = useState<string | null>(null);
 
-    const { reset, setValue } = useForm<TEventParticipant>({
+    const { reset, setValue, watch, getValues } = useForm<TEventParticipant>({
         defaultValues: ResetEventParticipant
     });
 
@@ -66,7 +66,7 @@ export const EventParticipantModalCreatePresence = () => {
             setPagination({
                 ...ResetPagination,
                 currentPage: result.currentPage,
-                data: result.data.map((x: any) => ({...x, function: x.functions.map((x: any) => (x.name)).join("/"), hour: x.functions.map((x: any) => (x.hours)).join("/")})),
+                data: result.data,
                 sizePage: result.pageSize,
                 totalPages: result.totalPages,
                 totalCount: result.totalCount,
@@ -91,11 +91,11 @@ export const EventParticipantModalCreatePresence = () => {
     return (
         <ModalV2 isOpen={modal} onClose={closeModal} title="Presença Participantes" size="xl">
             <form className="flex flex-col p-6">
-                <div className="grid grid-cols-8 gap-4 max-h-[calc(100dvh-15rem)] overflow-y-auto">
+                <div className="grid grid-cols-8 gap-4 max-h-[calc(100dvh-15rem)] overflow-y-auto px-2">
                     <div className="col-span-8">
                         {
                             pagination.data.map((x: any) => {
-                                return <EventParticipantCardPresence key={x.id} participant={x} open={openId === x.id} onToggle={() => setOpenId(openId === x.id ? null : x.id)} onSave={(obj) => confirm({...obj})} />
+                                return <EventParticipantCardPresence key={x.id} getValues={getValues} setValue={setValue} watch={watch} participant={x} open={openId === x.id} onToggle={() => setOpenId(openId === x.id ? null : x.id)} onSave={(obj) => confirm({...obj, functionId: x.functionId, id: x.id})} />
                             })
                         }
                     </div>

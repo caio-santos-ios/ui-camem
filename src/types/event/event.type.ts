@@ -5,6 +5,7 @@ export type TEvent = {
     startDate: any;
     endDate: any;
     status: "Rascunho" | "Publicado";
+    photo: string;
 }
 
 export const ResetEvent: TEvent = {
@@ -13,14 +14,29 @@ export const ResetEvent: TEvent = {
     description: "",
     startDate: null,
     endDate: null,
-    status: "Rascunho"
+    status: "Rascunho",
+    photo: ""
 }
+
 export type TParticipantFunction = {
+    id?: string;
     name: string;
+    eventId: string;
+    eventParticipantId: string;
     hours: number;
     isPresence: boolean;
     notesPresence: string;
 };
+
+export const ResetParticipantFunction: TParticipantFunction = {
+    id: "",
+    name: "",
+    eventId: "",
+    eventParticipantId: "",
+    hours: 0,
+    isPresence: true,
+    notesPresence: ""
+}
 
 export type TEventParticipant = {
     id?: string;
@@ -30,6 +46,11 @@ export type TEventParticipant = {
     userName: string;
     eventId: string;
     description: string;
+    functionName: string;
+    functionId: string;
+    hours: number;
+    isPresence: boolean;
+    notesPresence: string;
 };
 
 export const ResetEventParticipant: TEventParticipant = {
@@ -39,5 +60,10 @@ export const ResetEventParticipant: TEventParticipant = {
     userId: "",
     userName: "",
     eventId: "",
-    description: ""
+    description: "",
+    functionName: "",
+    functionId: "",
+    hours: 0,
+    isPresence: true,
+    notesPresence: ""
 };

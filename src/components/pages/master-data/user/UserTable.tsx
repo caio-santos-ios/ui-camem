@@ -34,7 +34,7 @@ const columns: TDataTableColumns[] = [
   {title: "E-mail", label: "email", type: "text"},
   {title: "Acesso", label: "statusAccess", type: "workflow"},
   {title: "Vínculo institucional", label: "profileUserName", type: "text"},
-  // {title: "Data de Criação", label: "createdAt", type: "date"},
+  {title: "Bloqueado", label: "blocked", type: "booleanYesNo"},
 ]
 
 const module = "B";

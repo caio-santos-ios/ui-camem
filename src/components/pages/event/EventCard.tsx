@@ -1,5 +1,6 @@
 "use client";
 
+import { CoverPhoto } from "@/components/cover-photo/CoverPhoto";
 import { maskDate } from "@/utils/mask.util";
 import { ReactNode } from "react";
 
@@ -12,6 +13,7 @@ type TProps = {
     endDate?: string;
     actions: ReactNode;
     status: string;
+    photo: string;
 };
 
 const statusLabel: Record<string, { label: string; className: string }> = {
@@ -20,7 +22,7 @@ const statusLabel: Record<string, { label: string; className: string }> = {
     Rascunho:  { label: "Rascunho",  className: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400" },
 };
 
-export const EventCard = ({ id, title, description, participants, startDate, endDate, actions, status }: TProps) => {
+export const EventCard = ({ id, title, description, participants, startDate, endDate, actions, status, photo }: TProps) => {
     const visibleParticipants = participants.slice(0, 3);
     const remaining = participants.length - visibleParticipants.length;
 
@@ -37,10 +39,14 @@ export const EventCard = ({ id, title, description, participants, startDate, end
             <div className="flex flex-col gap-3">
                 <div className="flex items-start justify-between gap-2">
                     <h3 className="text-sm font-semibold text-gray-900 dark:text-white leading-snug line-clamp-1">{title}</h3>
-                    <div className="flex flex-col items-end">
+                    <div className="flex flex-col items-end h-9">
                         <p className="shrink-0 text-xs text-gray-400 dark:text-gray-500 mt-0.5">Inicio: {maskDate(startDate)}</p>
                         {endDate && ( <p className="shrink-0 text-xs text-gray-400 dark:text-gray-500 mt-0.5">Fim: {maskDate(endDate)}</p>)}
                     </div>
+                </div>
+                
+                <div className="w-full">
+                    <CoverPhoto value={photo} />
                 </div>
 
                 <div className="text-xs h-60 text-gray-500 dark:text-gray-400 leading-relaxed line-clamp-15 prose prose-xs dark:prose-invert max-w-none

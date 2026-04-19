@@ -303,7 +303,7 @@ export const RichTextEditor = ({
                     </div>
                   )
                 }
-                <div style={{ height: height ?? 220, overflowY: "auto", minHeight }} className={disabled ? "opacity-60 pointer-events-none select-none" : ""}>
+                <div style={{ height: height ?? 220, overflowY: "auto", minHeight }} className={disabled ? "opacity-60 select-none" : ""}>
                   <EditorContent editor={editor} />
                 </div>
             </div>

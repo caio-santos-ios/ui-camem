@@ -24,7 +24,7 @@ export default function NotFound() {
         </p>
 
         <Link
-          href="/dashboard"
+          href="/master-data/profile"
           className="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-5 py-3.5 text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/ dark:hover:text-gray-200"
         >
           Voltar

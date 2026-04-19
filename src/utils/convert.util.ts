@@ -53,3 +53,24 @@ export const convertNumberMoney = (value: number): string => {
     .replace(".", ",")             
     .replace(/\B(?=(\d{3})+(?!\d))/g, "."); 
 };
+
+export const convertObjFormData = (obj: any): FormData => {
+  const formData = new FormData();
+
+  Object.keys(obj).forEach(key => {
+    const value = obj[key];
+    if(value) {
+      if (Array.isArray(value)) {
+        value.forEach(item => formData.append(`${key}[]`, item));
+      } 
+      else if (typeof value === 'object' && !(value instanceof File) && !(value instanceof Blob)) {
+      formData.append(key, JSON.stringify(value));
+      } 
+      else {
+        formData.append(key, value);
+      }
+    }
+  });
+
+  return formData;
+};

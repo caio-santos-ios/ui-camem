@@ -1,49 +1,51 @@
 "use client";
 
-import { useModal } from "../../hooks/useModal";
 import Button from "../ui/button/Button";
-import Label from "../form/Label";
-import { userLoggerAtom } from "@/jotai/auth/auth.jotai";
 import { useAtom } from "jotai";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { loadingAtom } from "@/jotai/global/loading.jotai";
 import { api } from "@/service/api.service";
 import { configApi, resolveResponse } from "@/service/config.service";
-import { useEffect, useRef } from "react";
-import { ResetUserProfile, TUserLogged, TUserProfile } from "@/types/master-data/user.type";
+import { useEffect, useRef, useState } from "react";
+import { ResetUser, ResetUserLogged, ResetUserProfile, TUser, TUserLogged, TUserProfile } from "@/types/master-data/user.type";
 import { getUserLogged } from "@/utils/auth.util";
 import { profileModalAtom } from "@/jotai/master-data/profile.jotai";
 import { ProfileModalCreate } from "../pages/master-data/profile/ProfileModalCreate";
 import { userAtom, userModalUpdatePasswordAtom } from "@/jotai/master-data/user.jotai";
 import { UserModalUpdatePassword } from "../pages/master-data/user/UserModalUpdatePassword";
+import { ProfileNotificationSettingsCard } from "../pages/master-data/profile/ProfileNotificationSettingsCard";
 
 const roleLabel: Record<string, string> = {
-  Student:     "Aluno(a)",
-  Teacher:     "Professor(a)",
+  Student: "Aluno(a)",
+  Teacher: "Professor(a)",
   Coordinator: "Coordenador(a)",
-  Director:    "Diretor(a)",
-  Manager:     "Gestor(a)",
-  Admin:       "Administrador(a)",
+  Director: "Diretor(a)",
+  Manager: "Gestor(a)",
+  Admin: "Administrador(a)",
 };
 
 export default function UserMetaCard() {
-  const [_, setLoading]              = useAtom(loadingAtom);
-  const [__, setModal]            = useAtom(profileModalAtom);
-  const [user, setUser]              = useAtom(userAtom);
+  const [_, setLoading] = useAtom(loadingAtom);
+  const [__, setModal] = useAtom(profileModalAtom);
+  const [user, setUser] = useAtom(userAtom);
   const [___, setModalUpdatePassword] = useAtom(userModalUpdatePasswordAtom);
-  const fileInputRef                 = useRef<HTMLInputElement>(null);
+  const [mounted, setMounted] = useState(false);
 
-  const { register, reset, watch } = useForm<TUserProfile>({
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const { register, reset, watch, getValues } = useForm<TUserProfile>({
     defaultValues: ResetUserProfile,
   });
 
-  const userLogged: TUserLogged = getUserLogged();
+  const settingNotification = watch("settingNotification");
 
-  const getById = async () => {
+  const [userLogged, setUserLogged] = useState<TUserLogged>(ResetUserLogged);
+
+  const getById = async (id: string) => {
     try {
       setLoading(true);
-      const { data } = await api.get(`/users/${userLogged.id}`, configApi());
-      const result   = data.result.data;
+      const { data } = await api.get(`/users/${id}`, configApi());
+      const result = data.result.data;
       reset(result);
       setUser(result);
     } catch (error) {
@@ -60,10 +62,22 @@ export default function UserMetaCard() {
     try {
       setLoading(true);
       const { status, data } = await api.put(`/users/profile-photo`, formBody, configApi(false));
-      const result           = data.result.data;
+      const result = data.result.data;
       localStorage.setItem("telemovviPhoto", result.photo);
       resolveResponse({ status, ...data });
-      await getById();
+      await getById(watch("id"));
+    } catch (error) {
+      resolveResponse(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateSettingsNotification: SubmitHandler<TUser> = async (body: TUser) => {
+    try {
+      setLoading(true);
+      const { data } = await api.put(`/users/setting-notifications`, body, configApi());
+      resolveResponse({ status: 200, message: data.result.message });
     } catch (error) {
       resolveResponse(error);
     } finally {
@@ -73,21 +87,15 @@ export default function UserMetaCard() {
 
   const normalizeName = (name: string) => name?.slice(0, 1).toUpperCase() ?? "";
 
-  // const blocked = user?.blocked      ?? userLogged?.blocked      ?? false;
-  // const role    = user?.role         ?? userLogged?.role         ?? "";
-  // const ra      = user?.ra           ?? userLogged?.ra           ?? "";
-  // const cpf     = user?.cpf          ?? userLogged?.cpf          ?? "";
-  // const photo   = user?.photo        ?? userLogged?.photo        ?? "";
-  // const name    = user?.name         ?? userLogged?.name         ?? "";
-  // const email   = user?.email        ?? userLogged?.email        ?? "";
-
   useEffect(() => {
-    getById();
+    setMounted(true);
+    setUserLogged(getUserLogged());
+    getById(getUserLogged().id);
   }, []);
 
   return (
     <>
-      <div className="p-6 border border-gray-200 rounded-2xl dark:border-gray-800">
+      <div className="p-6 border border-gray-200 rounded-2xl dark:border-gray-800 mb-4">
 
         <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center justify-between">
 
@@ -98,7 +106,7 @@ export default function UserMetaCard() {
                 onClick={() => fileInputRef.current?.click()}
                 className="w-24 h-24 rounded-full overflow-hidden border-2 border-gray-200 dark:border-gray-700 cursor-pointer ring-2 ring-offset-2 ring-transparent hover:ring-brand-500 dark:ring-offset-gray-900 transition-all"
               >
-                {userLogged.photo ? (
+                {mounted && userLogged.photo ? (
                   <img
                     src={userLogged.photo}
                     alt="Foto do usuário"
@@ -113,8 +121,8 @@ export default function UserMetaCard() {
                 )}
                 <div className="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-                    <circle cx="12" cy="13" r="4"/>
+                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                    <circle cx="12" cy="13" r="4" />
                   </svg>
                 </div>
               </div>
@@ -144,7 +152,7 @@ export default function UserMetaCard() {
                 {userLogged.role && (
                   <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
                     </svg>
                     {roleLabel[userLogged.role] ?? userLogged.role}
                   </div>
@@ -152,7 +160,7 @@ export default function UserMetaCard() {
                 {userLogged.ra && (
                   <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/>
+                      <rect x="2" y="5" width="20" height="14" rx="2" /><line x1="2" y1="10" x2="22" y2="10" />
                     </svg>
                     RA: {userLogged.ra}
                   </div>
@@ -160,7 +168,7 @@ export default function UserMetaCard() {
                 {userLogged.cpf && (
                   <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/>
+                      <rect x="2" y="5" width="20" height="14" rx="2" /><line x1="2" y1="10" x2="22" y2="10" />
                     </svg>
                     CPF: {userLogged.cpf}
                   </div>
@@ -169,17 +177,19 @@ export default function UserMetaCard() {
             </div>
           </div>
 
-          <div className="flex gap-2 shrink-0 self-start sm:self-center">
-            <Button size="sm" variant="outline" onClick={() => setModalUpdatePassword(true)}>
+          <div className="flex gap-2 shrink-0 self-start sm:self-center w-full md:w-60">
+            <Button className="w-full" size="sm" variant="outline" onClick={() => setModalUpdatePassword(true)}>
               Alterar senha
             </Button>
-            <Button size="sm" variant="primary" onClick={() => setModal(true)}>
+            <Button className="w-full" size="sm" variant="primary" onClick={() => setModal(true)}>
               Editar
             </Button>
           </div>
 
         </div>
       </div>
+
+      {/* <ProfileNotificationSettingsCard onSave={(settings) => { updateSettingsNotification({...ResetUser, id: user.id, settingNotification: settings}) }} defaultValues={settingNotification} /> */}
 
       <ProfileModalCreate />
       <UserModalUpdatePassword />

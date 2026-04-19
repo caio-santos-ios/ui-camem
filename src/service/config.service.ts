@@ -38,7 +38,7 @@ export const resolveResponse = (response: any) => {
     });
     return;
   };
-  
+  console.log(response)
   const result = response.response.data.result;
 
   if(response.status >= 400 && response.status < 500) {

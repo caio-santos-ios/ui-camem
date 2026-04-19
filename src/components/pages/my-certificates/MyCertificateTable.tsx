@@ -11,7 +11,7 @@ import { NotData } from "@/components/not-data/NotData";
 import { ResetPagination } from "@/types/global/pagination.type";
 import Pagination from "@/components/tables/Pagination";
 import { getUserLogged } from "@/utils/auth.util";
-import { downloadCertificate, MyCertificateCard } from "./MyCertificateCard";
+import { MyCertificateCard } from "./MyCertificateCard";
 
 const module = "E";
 const routine = "E1";
@@ -74,6 +74,7 @@ export default function MyCertificateTable() {
                     nameEvent={obj.nameEvent} 
                     functions={obj.functions}
                     keyCertificate={obj.keyCertificate}
+                    html={obj.html}
                   />
                 ) 
               })

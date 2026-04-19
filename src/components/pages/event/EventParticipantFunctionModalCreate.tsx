@@ -1,7 +1,6 @@
 "use client";
 
 import { DataTableCard } from "@/components/data-table-card/DataTableCard";
-import Autocomplete from "@/components/form/Autocomplete";
 import Label from "@/components/form/Label";
 import { IconDelete } from "@/components/icons/global/iconDelete/IconDelete";
 import { IconEdit } from "@/components/icons/global/iconEdit/IconEdit";
@@ -9,12 +8,12 @@ import { ModalDelete } from "@/components/modal-delete/ModalDelete";
 import { NotData } from "@/components/not-data/NotData";
 import Button from "@/components/ui/button/Button";
 import ModalV2 from "@/components/ui/modalV2"
-import { eventAtom, eventParticipantAtom, eventParticipantModalAtom } from "@/jotai/event/event.jotai";
+import { eventAtom, eventParticipanFunctiontModalAtom, eventParticipantAtom, eventParticipantModalAtom } from "@/jotai/event/event.jotai";
 import { loadingAtom } from "@/jotai/global/loading.jotai";
 import { modalDeleteAtom } from "@/jotai/global/modal.jotai";
 import { api } from "@/service/api.service";
 import { configApi, resolveResponse } from "@/service/config.service";
-import { ResetEventParticipant, TEventParticipant, TParticipantFunction } from "@/types/event/event.type";
+import { ResetEventParticipant, ResetParticipantFunction, TParticipantFunction } from "@/types/event/event.type";
 import { TDataTableColumns } from "@/types/global/data-table-card.type";
 import { ResetPagination, TPagination } from "@/types/global/pagination.type";
 import { TUser } from "@/types/master-data/user.type";
@@ -24,33 +23,24 @@ import { useEffect, useRef, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 const columns: TDataTableColumns[] = [
-    {title: "Nome no Certificado", label: "name", type: "text"},
-    {title: "RA", label: "userRa", type: "text"},
-    {title: "CPF", label: "userCpf", type: "text"},
-    {title: "Funções", label: "functionName", type: "text"},
+    {title: "Nome da Função", label: "name", type: "text"},
     {title: "Horas", label: "hours", type: "text"},
 ]
 
 const module = "F";
 const routine = "F1";
 
-export const EventParticipantModalCreate = () => {
+export const EventParticipantFunctionModalCreate = () => {
     const [_, setLoading] = useAtom(loadingAtom);
     const [pagination, setPagination] = useState<TPagination>(ResetPagination);
-    const [modal, setModal] = useAtom(eventParticipantModalAtom);
+    const [modal, setModal] = useAtom(eventParticipanFunctiontModalAtom);
     const [event] = useAtom(eventAtom);
     const [eventParticipant, setEventParticipant] = useAtom(eventParticipantAtom);
-    const [users, setUsers] = useState<TUser[]>([]);
-    const [functions, setFunctions] = useState<TParticipantFunction[]>([]);
     const [modalDelete, setModalDelete] = useAtom(modalDeleteAtom);
-    const [autocompleteKey, setAutocompleteKey] = useState(0);
-    const abortRef = useRef<AbortController | null>(null);
 
-    const { register, reset, setValue, watch, getValues } = useForm<TEventParticipant>({
+    const { register, handleSubmit, reset, setValue, watch, getValues, control, formState: { errors }} = useForm<TParticipantFunction>({
         defaultValues: ResetEventParticipant
     });
-    
-    const userName = watch("userName");
 
     const closeModal = () => {
         setModal(false);
@@ -58,8 +48,9 @@ export const EventParticipantModalCreate = () => {
         reset(ResetEventParticipant);
     };
 
-    const confirm = async (body: TEventParticipant) => {
+    const confirm = async (body: TParticipantFunction) => {
         setValue("eventId", event.id!);
+
         if(!body.id) {
             await create(body);
         } else {
@@ -67,18 +58,16 @@ export const EventParticipantModalCreate = () => {
         };
     } 
         
-    const create: SubmitHandler<TEventParticipant> = async (body: TEventParticipant) => {
+    const create: SubmitHandler<TParticipantFunction> = async (body: TParticipantFunction) => {
         try {
             setLoading(true);
-            const {data} = await api.post(`/event-participants`, body, configApi());
+            const form: any = {...body};
+            if(!body.hours || body.hours == 0) delete form.hours;
+            
+            const {data} = await api.post(`/event-participant-functions`, form, configApi());
             resolveResponse({status: 201, message: data.result.message});
             await getAll(1);
-            
-            setValue("id", "");
-            setValue("userId", "");
-            setValue("userName", "");
             setValue("name", "");
-            setValue("functionId", "");
             setValue("hours", 0);
         } catch (error) {
             resolveResponse(error);
@@ -87,18 +76,16 @@ export const EventParticipantModalCreate = () => {
         }
     };
     
-    const update: SubmitHandler<TEventParticipant> = async (body: TEventParticipant) => {
+    const update: SubmitHandler<TParticipantFunction> = async (body: TParticipantFunction) => {
         try {
             setLoading(true);
-            const {data} = await api.put(`/event-participants`, body, configApi());
+            const form: any = {...body};
+            if(!body.hours || body.hours == 0) delete form.hours;
+
+            const {data} = await api.put(`/event-participant-functions`, form, configApi());
             resolveResponse({status: 200, message: data.result.message});
             await getAll(1);
-            
-            setValue("id", "");
-            setValue("userId", "");
-            setValue("userName", "");
             setValue("name", "");
-            setValue("functionId", "");
             setValue("hours", 0);
         } catch (error) {
             resolveResponse(error);
@@ -110,11 +97,10 @@ export const EventParticipantModalCreate = () => {
     const getById = async (id: string) => {
         try {
             setLoading(true);
-            const {data} = await api.get(`/event-participants/${id}`, configApi());
+            const {data} = await api.get(`/event-participant-functions/${id}`, configApi());
             const result = data.result.data;
 
             reset(result);
-            setUsers([]);
         } catch (error) {
             resolveResponse(error);
         } finally {
@@ -125,7 +111,7 @@ export const EventParticipantModalCreate = () => {
     const getAll = async (page: number) => {
         try {
             setLoading(true);
-            const {data} = await api.get(`/event-participants?deleted=false&eventId=${event.id}&orderBy=createdAt&sort=desc&pageSize=6&pageNumber=${page}`, configApi());
+            const {data} = await api.get(`/event-participant-functions?deleted=false&eventId=${event.id}&orderBy=createdAt&sort=desc&pageSize=10&pageNumber=${page}`, configApi());
             const result = data.result.data ?? ResetPagination;
             
             setPagination({
@@ -142,56 +128,11 @@ export const EventParticipantModalCreate = () => {
             setLoading(false);
         }
     };
-    
-    const loadedUsers = async () => {
-        try {
-            setLoading(true);
-            const {data} = await api.get(`/users/select?deleted=false&in$role=Student,Teacher,Director,Coordinator&statusAccess=Aprovado`, configApi());
-            const result = data.result.data;
-            setUsers(result);
-        } catch (error) {
-            resolveResponse(error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const loadedFunctions = async (eventId: string) => {
-        try {
-            setLoading(true);
-            const {data} = await api.get(`/event-participant-functions/select?deleted=false&eventId=${eventId}`, configApi());
-            const result = data.result.data;
-            setFunctions(result);
-        } catch (error) {
-            resolveResponse(error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const getAutocompleUsers = async (value: string) => {
-        try {
-            abortRef.current?.abort();
-    
-            if (!value.trim()) {
-                setUsers([]);
-                return;
-            }
-    
-            abortRef.current = new AbortController();
-    
-            const {data} = await api.get(`/users/select?deleted=false&blocked=false&regex$or$name=${value}&in$role=Student,Teacher,Director,Coordinator&statusAccess=Aprovado`, configApi());
-            const result = data.result.data ?? [];
-            setUsers(result.map((x: any) => ({...x, description: `${x.name} - RA: ${x.ra ? x.ra : "Sem RA"}`})));
-        } catch (error) {
-            resolveResponse(error);
-        }
-    };
 
     const destroy = async () => {
         try {
             setLoading(true);
-            await api.delete(`/event-participants/${eventParticipant.id}`, configApi());
+            await api.delete(`/event-participant-functions/${eventParticipant.id}`, configApi());
             resolveResponse({status: 204, message: "Excluído com sucesso"});
             setModalDelete(false);
             await getAll(1);
@@ -226,8 +167,6 @@ export const EventParticipantModalCreate = () => {
         const initial = async () => {
             if(event.id && modal) {
                 setValue("eventId", event.id);
-                loadedUsers();
-                loadedFunctions(event.id);
                 getAll(1);
             };
         };
@@ -235,49 +174,22 @@ export const EventParticipantModalCreate = () => {
     }, [event.id, modal]);
 
     return (
-        <ModalV2 isOpen={modal} onClose={closeModal} title="Participantes" size="xl">
+        <ModalV2 isOpen={modal} onClose={closeModal} title="Função" size="xl">
             <form className="flex flex-col p-6">
-                <div className="grid grid-cols-8 gap-x-6 gap-y-5 max-h-[calc(100dvh-12rem)]">
+                <div className="grid grid-cols-8 gap-x-6 gap-y-5">
                     {
                         event.status == "Rascunho" && (
                             <>
                                 <div className="col-span-8 md:col-span-4">
-                                    <Label title="Usuário" required={false}/>
-                                    <Autocomplete key={autocompleteKey} placeholder="Buscar Usuário..." defaultValue={userName} objKey="id" objValue="description" onSearch={(value: string) => getAutocompleUsers(value)} onSelect={(opt) => {
-                                        setValue("userId", opt.id);
-                                        setValue("userName", opt.name)
-                                        setValue("name", opt.name)
-                                        setUsers([]);
-                                    }} options={users}/>
-                                </div>
-                                <div className="col-span-8 md:col-span-4">
-                                    <Label title="Nome no Certificado"/>
-                                    <input placeholder="Nome no Certificado" {...register("name")} type="text" className="input-erp-primary input-erp-default"/>
-                                </div>
-                                <div className="col-span-8 md:col-span-4">
-                                    <Label title="Função"/>
-                                    <select {...register("functionId")} onChange={(e) => {
-                                        const id = e.target.value;
-
-                                        if(id) {
-                                            const fun = functions.find(x => x.id == id);
-                                            if(fun) setValue("hours", fun.hours);
-                                        } else {
-                                            setValue("hours", 0);
-                                        }
-                                    }} className="h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 text-sm dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 text-gray-800">
-                                        <option value="">Selecione</option>
-                                        {
-                                            functions.map(x => <option key={x.id} value={x.id}>{x.name}</option>)
-                                        }
-                                    </select>
+                                    <Label title="Nome da função"/>
+                                    <input placeholder="Nome da função" {...register("name")} type="text" className="input-erp-primary input-erp-default"/>
                                 </div>
                                 <div className="col-span-8 md:col-span-2">
-                                    <Label title="Horas" required={false}/>
+                                    <Label title="Horas"/>
                                     <input {...register("hours", { valueAsNumber: true })} type="number" placeholder="Horas" className="input-erp-primary input-erp-default no-spinner" />
                                 </div>
                                 <div className="col-span-8 md:col-span-2 flex items-end gap-4">
-                                    <Button className="" size="sm" variant="outline" onClick={() => {reset(ResetEventParticipant)}}>Cancelar</Button>
+                                    <Button className="" size="sm" variant="outline" onClick={() => {reset(ResetParticipantFunction)}}>Cancelar</Button>
                                     <Button className="" size="sm" variant="primary" onClick={() => confirm(getValues())}>Salvar</Button>
                                 </div>
                             </>
@@ -297,7 +209,8 @@ export const EventParticipantModalCreate = () => {
                                         <IconDelete action="delete" obj={obj} getObj={getObj}/> 
                                     }
                                     </>
-                                )}/>
+                                )
+                                }/>
                                 :
                                 <NotData />
                             }
