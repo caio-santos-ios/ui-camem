@@ -146,7 +146,7 @@ export default function EventTable() {
                           <IconEdit action="edit" obj={obj} getObj={getObj}/>
                         }
                         {
-                          permissionDelete(module, routine) && obj.status == "Rascunho" &&
+                          permissionDelete(module, routine) &&
                           <IconDelete action="delete" obj={obj} getObj={getObj}/> 
                         }
                       </div>

@@ -52,7 +52,7 @@ export default function CertificadosPage() {
             <h2 className="text-sm font-bold uppercase tracking-widest text-[#2a8e84] mb-4">
               Token de validação
             </h2>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               <input
                 type="text"
                 value={keyCertificate}

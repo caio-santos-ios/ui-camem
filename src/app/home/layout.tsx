@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Navbar } from "@/components/ui/navbar/Navbar";
-import "../globals.css";
-import { Providers } from "../providers";
-import { Loading } from "@/components/loading/Loading";
+// import "../globals.css";
 import { Outfit } from "next/font/google";
 
 export const metadata: Metadata = {
