@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { EventParticipantCardPresence } from "./EventParticipantCardPresence";
 import Label from "@/components/form/Label";
+import { TCustomCertificate } from "@/types/custom-certificate/custom-certificate.type";
 
 export const EventParticipantModalCreatePresence = () => {
     const [_, setLoading] = useAtom(loadingAtom);
@@ -20,6 +21,7 @@ export const EventParticipantModalCreatePresence = () => {
     const [modal, setModal] = useAtom(eventParticipantModalPresenceAtom);
     const [event, setEvent] = useAtom(eventAtom);
     const [openId, setOpenId] = useState<string | null>(null);
+    const [certificates, setCertificates] = useState<TCustomCertificate[]>([]);
 
     const { reset, register, setValue, watch, getValues } = useForm<TEventParticipant>({
         defaultValues: ResetEventParticipant
@@ -34,8 +36,8 @@ export const EventParticipantModalCreatePresence = () => {
     const confirm = async (body: TEventParticipant) => {
         try {
             setLoading(true);
-            const {data} = await api.put(`/event-participants/presence`, body, configApi());
-            resolveResponse({status: 200, message: data.result.message});
+            const { data } = await api.put(`/event-participants/presence`, body, configApi());
+            resolveResponse({ status: 200, message: data.result.message });
             await getAll(1);
             reset(ResetEventParticipant);
         } catch (error) {
@@ -44,12 +46,12 @@ export const EventParticipantModalCreatePresence = () => {
             setLoading(false);
         }
     }
-    
+
     const finish = async (body: TEvent) => {
         try {
             setLoading(true);
-            const {data} = await api.put(`/events/finish`, body, configApi());
-            resolveResponse({status: 200, message: data.result.message});
+            const { data } = await api.put(`/events/finish`, body, configApi());
+            resolveResponse({ status: 200, message: data.result.message });
             closeModal()
         } catch (error) {
             resolveResponse(error);
@@ -61,9 +63,9 @@ export const EventParticipantModalCreatePresence = () => {
     const getAll = async (page: number) => {
         try {
             setLoading(true);
-            const {data} = await api.get(`/event-participants?deleted=false&eventId=${event.id}&orderBy=createdAt&sort=desc&pageSize=10&pageNumber=${page}`, configApi());
+            const { data } = await api.get(`/event-participants?deleted=false&eventId=${event.id}&orderBy=createdAt&sort=desc&pageSize=10&pageNumber=${page}`, configApi());
             const result = data.result.data ?? ResetPagination;
-            
+
             setPagination({
                 ...ResetPagination,
                 currentPage: result.currentPage,
@@ -79,11 +81,25 @@ export const EventParticipantModalCreatePresence = () => {
         }
     };
 
+    const loaderCertificates = async () => {
+        try {
+            setLoading(true);
+            const { data } = await api.get(`/custom-certificates/select?deleted=false`, configApi());
+            const result = data?.result?.data ?? [];
+            setCertificates(result);
+        } catch (error) {
+            resolveResponse(error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
         const initial = async () => {
-            if(event.id && modal) {
+            if (event.id && modal) {
                 setValue("eventId", event.id);
                 getAll(1);
+                loaderCertificates();
             };
         };
         initial();
@@ -96,13 +112,26 @@ export const EventParticipantModalCreatePresence = () => {
                     <div className="col-span-8">
                         {
                             pagination.data.map((x: any) => {
-                                return <EventParticipantCardPresence key={x.id} getValues={getValues} setValue={setValue} watch={watch} participant={x} open={openId === x.id} onToggle={() => setOpenId(openId === x.id ? null : x.id)} onSave={(obj) => confirm({...obj, functionId: x.functionId, id: x.id})} />
+                                return <EventParticipantCardPresence key={x.id} getValues={getValues} setValue={setValue} watch={watch} participant={x} open={openId === x.id} onToggle={() => setOpenId(openId === x.id ? null : x.id)} onSave={(obj) => confirm({ ...obj, functionId: x.functionId, id: x.id })} />
                             })
                         }
                     </div>
-                    <div className="col-span-8">
-                        <Label title="Livro de Registro"/>
-                        <input placeholder="Livro de Registro" onChange={(e) => {setEvent(evt => ({...evt, registerBookNumber: e.target.value}))}} type="text" className="input-erp-primary input-erp-default"/>
+                    <div className="col-span-8 md:col-span-2">
+                        <Label title="Pasta de Registro" />
+                        <input placeholder="Pasta de Registro" onChange={(e) => { setEvent(evt => ({ ...evt, registerFolderNumber: e.target.value })) }} type="text" className="input-erp-primary input-erp-default" />
+                    </div>
+                    <div className="col-span-8 md:col-span-2">
+                        <Label title="Livro de Registro" />
+                        <input placeholder="Livro de Registro" onChange={(e) => { setEvent(evt => ({ ...evt, registerBookNumber: e.target.value })) }} type="text" className="input-erp-primary input-erp-default" />
+                    </div>
+                    <div className="col-span-8 md:col-span-4">
+                        <Label title="Certificado" />
+                        <select onChange={(e) => { setEvent(evt => ({ ...evt, certificateId: e.target.value })) }} className="h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 text-sm dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 text-gray-800">
+                            <option value="">Selecione</option>
+                            {
+                                certificates.map(x => <option key={x.id} value={x.id}>{x.name}</option>)
+                            }
+                        </select>
                     </div>
                 </div>
                 <div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">
@@ -110,6 +139,6 @@ export const EventParticipantModalCreatePresence = () => {
                     <Button size="sm" variant="primary" onClick={() => finish(event)}>Finalizar Evento</Button>
                 </div>
             </form>
-        </ModalV2>    
+        </ModalV2>
     )
 }

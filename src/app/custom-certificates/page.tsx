@@ -1,5 +1,6 @@
 import PageBreadcrumb from "@/components/pageBreadcrumb/PageBreadcrumb";
-import CertificateTable from "@/components/pages/custom-certificate/CertificateTable";
+import { CustomCertificateButtonCreate } from "@/components/pages/custom-certificate/CustomCertificateButtonCreate";
+import CustomCertificateTable from "@/components/pages/custom-certificate/CustomCertificateTable";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -11,7 +12,10 @@ export default function CerticatePage() {
   return (
     <div>
       <PageBreadcrumb pageIcon="MdBrush" pageTitle="Customizar Certificados" pageSubTitle="" />
-      <CertificateTable />
+      <div className="flex justify-end mb-2">
+        <CustomCertificateButtonCreate />
+      </div>
+      <CustomCertificateTable />
     </div>
   );
 }
