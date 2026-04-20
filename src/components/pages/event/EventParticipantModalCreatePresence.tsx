@@ -12,6 +12,7 @@ import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { EventParticipantCardPresence } from "./EventParticipantCardPresence";
+import Label from "@/components/form/Label";
 
 export const EventParticipantModalCreatePresence = () => {
     const [_, setLoading] = useAtom(loadingAtom);
@@ -20,7 +21,7 @@ export const EventParticipantModalCreatePresence = () => {
     const [event, setEvent] = useAtom(eventAtom);
     const [openId, setOpenId] = useState<string | null>(null);
 
-    const { reset, setValue, watch, getValues } = useForm<TEventParticipant>({
+    const { reset, register, setValue, watch, getValues } = useForm<TEventParticipant>({
         defaultValues: ResetEventParticipant
     });
 
@@ -98,6 +99,10 @@ export const EventParticipantModalCreatePresence = () => {
                                 return <EventParticipantCardPresence key={x.id} getValues={getValues} setValue={setValue} watch={watch} participant={x} open={openId === x.id} onToggle={() => setOpenId(openId === x.id ? null : x.id)} onSave={(obj) => confirm({...obj, functionId: x.functionId, id: x.id})} />
                             })
                         }
+                    </div>
+                    <div className="col-span-8">
+                        <Label title="Livro de Registro"/>
+                        <input placeholder="Livro de Registro" onChange={(e) => {setEvent(evt => ({...evt, registerBookNumber: e.target.value}))}} type="text" className="input-erp-primary input-erp-default"/>
                     </div>
                 </div>
                 <div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">

@@ -15,9 +15,11 @@ type TProps = {
 }
 
 const statusLabel: {label: string; className: string;}[] = [
-    {label: "Aprovado", className: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400"},
-    {label: "Pendente", className: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"},
-    {label: "Reprovado", className: "bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400"},
+    {label: "Aprovado",     className: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400"},
+    {label: "Pendente",     className: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"},
+    {label: "Reprovado",    className: "bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400"},
+    {label: "Sim",          className: "bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400"},
+    {label: "Não",          className: "bg-gray-100 text-gray-600 dark:bg-gray-900/30 dark:text-gray-400"},
 ]
 
 const getStatusBadge = (status: string) => {
@@ -44,6 +46,8 @@ export const DataTableCard = ({pagination, columns, changePage, actions, isActio
                 return value ? "Sim" : "Não";
             case "workflow":
                 return getStatusBadge(value);
+            case "booleanBadgeYesNo":
+                return getStatusBadge(value ? "Sim" : "Não");
             case "money":
                 return formattedMoney(value);
             default:

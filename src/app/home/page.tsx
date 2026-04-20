@@ -36,10 +36,8 @@ export default function HomePage() {
   return (
     <div className="min-h-screen flex flex-col bg-white dark:bg-gray-950 text-gray-900 dark:text-white overflow-x-hidden">
 
-      {/* ── HERO ─────────────────────────────────────────── */}
       <section className="relative flex flex-col justify-center px-6 py-28 sm:py-36 overflow-hidden">
 
-        {/* Background radial glow */}
         <div
           className="pointer-events-none absolute inset-0 -z-10"
           style={{
@@ -48,18 +46,15 @@ export default function HomePage() {
           }}
         />
 
-        {/* Decorative horizontal rule */}
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#1f544b]/20 to-transparent" />
+        <div className="absolute top-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-[#1f544b]/20 to-transparent" />
 
         <div className="max-w-4xl mx-auto text-center">
 
-          {/* Badge */}
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#1f544b]/20 bg-[#1f544b]/5 text-[#1f544b] dark:text-[#4DBFB5] text-xs font-semibold tracking-wide uppercase mb-8">
             <span className="w-1.5 h-1.5 rounded-full bg-[#2a8e84] animate-pulse" />
             Universidade Estadual de Maringá · UEM
           </div>
 
-          {/* Heading */}
           <h1 className="text-4xl sm:text-6xl font-bold tracking-tight text-gray-900 dark:text-white leading-[1.1] mb-6">
             Centro Acadêmico de{" "}
             <span className="relative inline-block">
@@ -80,7 +75,6 @@ export default function HomePage() {
             promovendo voz, acolhimento e oportunidades para toda a comunidade discente.
           </p>
 
-          {/* CTAs */}
           <div className="flex flex-wrap gap-3 justify-center">
             <Link
               href="/home/sobre"
@@ -100,7 +94,6 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Stat strip */}
         <div className="max-w-3xl mx-auto mt-16 w-full grid grid-cols-3 gap-px bg-gray-200 dark:bg-gray-800 rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-800">
           {[
             { value: "1988", label: "Fundação" },
@@ -108,23 +101,22 @@ export default function HomePage() {
             { value: "UEM",  label: "Maringá · PR" },
           ].map((stat) => (
             <div key={stat.label} className="flex flex-col items-center py-5 bg-white dark:bg-gray-950 gap-0.5">
-              <span className="text-xl font-bold text-[#1f544b] dark:text-[#4DBFB5]">{stat.value}</span>
+              <span className="text-xl font-bold text-[#1f544b] dark:text-brand-300">{stat.value}</span>
               <span className="text-xs text-gray-400 dark:text-gray-500">{stat.label}</span>
             </div>
           ))}
         </div>
       </section>
 
-      {/* ── PILARES ───────────────────────────────────────── */}
       <section className="py-20 px-6 border-t border-gray-100 dark:border-gray-800">
         <div className="max-w-5xl mx-auto">
 
           <div className="flex items-center gap-3 mb-10">
-            <span className="h-px flex-1 bg-gradient-to-r from-[#1f544b]/30 to-transparent" />
+            <span className="h-px flex-1 bg-linear-to-r from-[#1f544b]/30 to-transparent" />
             <p className="text-xs font-bold uppercase tracking-widest text-[#2a8e84]">
               O que fazemos
             </p>
-            <span className="h-px flex-1 bg-gradient-to-l from-[#1f544b]/30 to-transparent" />
+            <span className="h-px flex-1 bg-linear-to-l from-[#1f544b]/30 to-transparent" />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
@@ -133,8 +125,7 @@ export default function HomePage() {
                 key={i}
                 className="group relative flex flex-col gap-5 p-6 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 hover:border-[#2a8e84] hover:shadow-lg hover:shadow-[#1f544b]/5 dark:hover:border-[#2a8e84]/50 transition-all duration-300"
               >
-                {/* Top accent */}
-                <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-[#2a8e84]/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="absolute top-0 left-6 right-6 h-px bg-linear-to-r from-transparent via-[#2a8e84]/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
                 <div className="w-12 h-12 rounded-xl bg-[#f2faf9] dark:bg-[#1f544b]/10 flex items-center justify-center border border-[#c0e9e4]/50 dark:border-[#1f544b]/30">
                   <Image src={pillar.img} alt={pillar.alt} width={28} height={28} />
@@ -158,7 +149,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── DESTAQUES ─────────────────────────────────────── */}
       <section className="py-16 px-6 bg-[#f2faf9] dark:bg-[#1f544b]/5 border-t border-gray-100 dark:border-gray-800">
         <div className="max-w-5xl mx-auto flex flex-col sm:flex-row sm:items-start gap-8">
 
@@ -179,7 +169,7 @@ export default function HomePage() {
                   className="group flex items-center gap-3 px-4 py-3 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 hover:border-[#2a8e84] dark:hover:border-[#2a8e84]/50 hover:shadow-sm transition-all duration-200"
                 >
                   <span className="w-2 h-2 rounded-full bg-[#2a8e84] shrink-0 group-hover:scale-125 transition-transform" />
-                  <span className="text-sm text-gray-700 dark:text-gray-300 font-medium group-hover:text-[#1f544b] dark:group-hover:text-[#4DBFB5] transition-colors">
+                  <span className="text-sm text-gray-700 dark:text-gray-300 font-medium group-hover:text-[#1f544b] dark:group-hover:text-brand-300 transition-colors">
                     {item}
                   </span>
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-auto text-gray-300 dark:text-gray-600 group-hover:text-[#2a8e84] group-hover:translate-x-0.5 transition-all">

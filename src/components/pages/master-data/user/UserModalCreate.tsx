@@ -21,8 +21,9 @@ export const UserModalCreate = () => {
     const [user, setUser] = useAtom(userAtom);
     const [_, setLoading] = useAtom(loadingAtom);
     const [profileUsers, setProfileUsers] = useState<TProfileUser[]>([]);
+    const [showPassword, setShowPassword] = useState(false);
 
-    const { register, handleSubmit, reset, setValue, watch, getValues, formState: { errors }} = useForm<TUser>({
+    const { register, reset, setValue, watch, getValues, formState: { errors }} = useForm<TUser>({
         defaultValues: ResetUser
     });
 
@@ -132,6 +133,19 @@ export const UserModalCreate = () => {
                     <div className="col-span-6">
                         <Label title="RA"/>
                         <input placeholder="Seu RA" {...register("ra")} type="text" inputMode="numeric" maxLength={6} className="input-erp-primary input-erp-default"/>
+                    </div>
+                    <div className="col-span-6">
+                        <Label title="Nova Senha"/>
+                        <div className="relative">
+                            <input placeholder="Sua nova senha" {...register("password")} type={showPassword ? "text" : "password"} className="input-erp-primary input-erp-default"/>
+                            <span onClick={() => setShowPassword(!showPassword)} className="absolute z-1 -translate-y-1/2 cursor-pointer right-4 top-1/2">
+                                {showPassword ? (
+                                <EyeIcon className="fill-gray-500 dark:fill-gray-400" />
+                                ) : (
+                                <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400" />
+                                )}
+                            </span>
+                        </div>
                     </div>
                     <div className="col-span-2">
                         <Label title="Usuário bloqueado?"/>

@@ -25,7 +25,7 @@ import { ModalConfirm } from "@/components/modal-confirm/ModalConfirm";
 import { IconUpdatePassword } from "@/components/icons/master-data/IconUpdatePassword";
 import { IconForceApprove } from "@/components/icons/master-data/IconForceApprove";
 import { MdCancel, MdCheckCircle, MdOutlinePendingActions } from "react-icons/md";
-import { TUserLogged } from "@/types/master-data/user.type";
+import { ResetUser, TUserLogged } from "@/types/master-data/user.type";
 
 const columns: TDataTableColumns[] = [
   {title: "Nome", label: "name", type: "text"},
@@ -34,7 +34,7 @@ const columns: TDataTableColumns[] = [
   {title: "E-mail", label: "email", type: "text"},
   {title: "Acesso", label: "statusAccess", type: "workflow"},
   {title: "Vínculo institucional", label: "profileUserName", type: "text"},
-  {title: "Bloqueado", label: "blocked", type: "booleanYesNo"},
+  {title: "Bloqueado", label: "blocked", type: "booleanBadgeYesNo"},
 ]
 
 const module = "B";
@@ -146,6 +146,7 @@ export default function UserTable() {
       await api.delete(`/users/${user.id}`, configApi());
       resolveResponse({status: 204, message: "Excluído com sucesso"});
       closeModal();
+      setUser(ResetUser);
       await getAll(pagination.currentPage, currentStatusAccess);
     } catch (error) {
       resolveResponse(error);

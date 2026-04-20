@@ -6,6 +6,7 @@ export type TEvent = {
     endDate: any;
     status: "Rascunho" | "Publicado";
     photo: string;
+    registerBookNumber: string;
 }
 
 export const ResetEvent: TEvent = {
@@ -15,7 +16,8 @@ export const ResetEvent: TEvent = {
     startDate: null,
     endDate: null,
     status: "Rascunho",
-    photo: ""
+    photo: "",
+    registerBookNumber: ""
 }
 
 export type TParticipantFunction = {
