@@ -14,6 +14,7 @@ type TCertificateCard = {
   functions: string[];
   onDownload?: () => void;
   html: string;
+  origin: "automatic" | "manual"
 };
 
 export const downloadCertificate = async (data: {
@@ -61,241 +62,6 @@ export const downloadCertificate = async (data: {
     }
   };
 
-//   const html = `<!DOCTYPE html>
-// <html lang="pt-BR">
-
-// <head>
-//   <meta charset="UTF-8" />
-//   <title>Certificado - ${data.nameEvent}</title>
-//   <link
-//     href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap"
-//     rel="stylesheet" />
-//   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-//   <style>
-//     * {
-//       margin: 0;
-//       padding: 0;
-//       box-sizing: border-box;
-//     }
-
-//     body {
-//       font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
-//       background: #fff;
-//     }
-
-//     .cert {
-//       width: 200mm;
-//       background: #fff;
-//       display: flex;
-//       flex-direction: column;
-//     }
-
-//     .band {
-//       height: 30px;
-//       background: #1f544b;
-//       flex-shrink: 0;
-//     }
-
-//     .content {
-//       flex: 1;
-//       display: flex;
-//       flex-direction: column;
-//       align-items: center;
-//       padding: 22px 56px 18px;
-//     }
-
-//     .title {
-//       font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
-//       font-size: 30px;
-//       font-weight: 800;
-//       letter-spacing: 5px;
-//       color: #111;
-//       text-transform: uppercase;
-//       margin-bottom: 10px;
-//       text-underline-offset: 4px;
-//     }
-
-//     .intro {
-//       font-size: 13.5px;
-//       color: #111;
-//       text-align: center;
-//       margin-bottom: 8px;
-//       font-weight: 500;
-//     }
-
-//     .name-box {
-//       border-radius: 2px;
-//       padding: 6px 40px;
-//       margin-bottom: 8px;
-//       color: #111;
-//     }
-
-//     .name-box span {
-//       color: #111;
-//       font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;;
-//       font-size: 16px;
-//       font-weight: 700;
-//     }
-
-//     .body-text {
-//       font-size: 13.5px;
-//       color: #111;
-//       text-align: center;
-//       line-height: 1.8;
-//       max-width: 580px;
-//       margin-bottom: 10px;
-//     }
-
-//     .signatures {
-//       width: 100%;
-//       display: flex;
-//       align-items: center;
-//       justify-content: space-between;
-//       gap: 16px;
-//       margin-top: 10px;
-//     }
-
-//     .sig-realizacao {
-//       font-size: 11.5px;
-//       color: #111;
-//       margin-bottom: 4px;
-//       display: block;
-//     }
-
-//     .sig-wave {
-//       width: 80px;
-//       height: 36px;
-//     }
-
-//     .sig-camem-label {
-//       width: 150px;
-//       height: 150px;
-//     }
-
-//     .sig-logo {
-//       width: 100%;
-//     }
-
-//     .sig-center {
-//       display: flex;
-//       gap: 50px;
-//       justify-content: center;
-//       flex: 1;
-//       margin-top: 30px;
-//     }
-
-//     .sig-person {
-//       display: flex;
-//       flex-direction: column;
-//       align-items: center;
-//       gap: 1px;
-//     }
-
-//     .sig-line {
-//       width: 155px;
-//       margin-bottom: 3px;
-//     }
-
-//     .sig-name {
-//       font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;;
-//       font-size: 13px;
-//       font-weight: 700;
-//       color: #111;
-//     }
-
-//     .sig-role {
-//       font-size: 11px;
-//       color: #444;
-//     }
-
-//     .auth-code {
-//       font-size: 7.5px;
-//       color: #444;
-//       text-align: right;
-//       max-width: 200px;
-//       line-height: 1.55;
-//       font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;;
-//     }
-
-//     .card-qr-code {
-//       display: flex;
-//       flex-flow: column;
-//       align-items: flex-end;
-//       justify-content: flex-end;
-//       gap: 4px;
-//     }
-
-//     .auth-code {
-//       font-size: 7px;
-//       color: #444;
-//       text-align: right;
-//       max-width: 300px;
-//       line-height: 1.5;
-//       margin-top: 10px;
-//     }
-//   </style>
-// </head>
-
-// <body>
-//   <div class="cert">
-//     <div class="band"></div>
-//     <div class="content">
-//       <div class="title">Certificado</div>
-//       <p class="intro">O Centro Acadêmico de Medicina de Maringá certifica que</p>
-//       <div class="name-box"><span>${data.name}</span></div>
-//       <p class="body-text">
-//         participou como <strong>${getFunctions(data.functions) ?? "Participante"}</strong> ${getArticle(data.nameEvent)}
-//         <strong>${data.nameEvent}</strong> inscrita no CNPJ/MF nº 21.990.297/0001-50,
-//       de <strong>${dates}</strong>, perfazendo a carga horária de <strong>${data.hours} horas</strong>.
-//       </p>
-//       <div class="registry-box"></div>
-//       <div class="sig-center">
-//         <div class="sig-person">
-//           <div class="sig-line"></div>
-//           <span class="sig-name">Laura Yanaze</span>
-//           <span class="sig-role">Presidente do CAMEM</span>
-//         </div>
-//         <div class="sig-person">
-//           <div class="sig-line"></div>
-//           <span class="sig-name">Pedro Brites</span>
-//           <span class="sig-role">Presidente da AAAREY</span>
-//         </div>
-//       </div>
-//       <div class="signatures">
-//         <div>
-//           <span class="sig-realizacao">Realização:</span>
-//           <div class="sig-camem-label">
-//             <img class="sig-logo" src="${logoBase64}" />
-//           </div>
-//         </div>
-
-//         <div class="card-qr-code">
-//           <div id="qrcode" class="qr-code"></div>
-//           <p class="auth-code">
-//             Código de Autenticidade: <strong>${data.keyCertificate}</strong>
-//           </p>
-//           <p class="auth-code">
-//             Valide em: <strong>${process.env.NEXT_PUBLIC_UI_URL}/certificates-validate/${data.keyCertificate}</strong>
-//           </p>
-//         </div>
-//       </div>
-//     </div>
-//     <div class="band"></div>
-//   </div>
-// </body>
-// <script>
-//   new QRCode(document.getElementById("qrcode"), {
-//     text: "${data.keyCertificate ?? ''}",
-//     width: 100,
-//     height: 100,
-//     colorDark: "#111111",
-//     colorLight: "#ffffff",
-//     correctLevel: QRCode.CorrectLevel.H
-//   });
-// </script>
-
-//   </html>`;
-
   const blob  = new Blob([data.html], { type: "text/html;charset=utf-8" });
   const url   = URL.createObjectURL(blob);
   const link  = document.createElement("a");
@@ -307,7 +73,7 @@ export const downloadCertificate = async (data: {
   URL.revokeObjectURL(url);
 };
 
-export const MyCertificateCard = ({ name, nameEvent, startDate, endDate, hours, functionName, keyCertificate, functions, onDownload, html }: TCertificateCard) => {
+export const MyCertificateCard = ({ name, nameEvent, startDate, endDate, hours, functionName, keyCertificate, functions, onDownload, html, origin }: TCertificateCard) => {
   const handleDownload = () => {
     downloadCertificate({ name, nameEvent, startDate, endDate, hours, functionName, keyCertificate, functions, html });
     onDownload?.();
@@ -369,13 +135,23 @@ export const MyCertificateCard = ({ name, nameEvent, startDate, endDate, hours, 
       </div>
 
       <div className="px-5 pb-5">
-        <button
-          onClick={handleDownload}
-          className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#1f544b] text-white text-xs font-semibold hover:bg-[#174039] active:scale-[0.98] transition-all duration-150 shadow-md shadow-[#1f544b]/20"
-        >
-          <BiDownload size={20} />
-          Baixar certificado
-        </button>
+        {
+          origin == "automatic" ? (
+            <button
+              onClick={handleDownload}
+              className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#1f544b] text-white text-xs font-semibold hover:bg-[#174039] active:scale-[0.98] transition-all duration-150 shadow-md shadow-[#1f544b]/20"
+            >
+              <BiDownload size={20} />
+              Baixar certificado
+            </button>
+          ) : (
+            <a target="_blank" href={html}
+              className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#1f544b] text-white text-xs font-semibold hover:bg-[#174039] active:scale-[0.98] transition-all duration-150 shadow-md shadow-[#1f544b]/20">
+              <BiDownload size={20} />
+              Baixar certificado
+            </a>
+          )
+        }
       </div>
     </div>
   );
