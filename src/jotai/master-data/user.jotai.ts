@@ -3,4 +3,5 @@ import { atom } from "jotai";
 
 export const userModalAtom = atom<boolean>(false);
 export const userModalUpdatePasswordAtom = atom<boolean>(false);
+export const modalCertificateManualAtom = atom<boolean>(false);
 export const userAtom = atom<TUser>(ResetUser);

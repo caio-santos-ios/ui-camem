@@ -8,7 +8,7 @@ import { ModalDelete } from "@/components/modal-delete/ModalDelete";
 import { NotData } from "@/components/not-data/NotData";
 import Button from "@/components/ui/button/Button";
 import ModalV2 from "@/components/ui/modalV2"
-import { eventAtom, eventParticipanFunctiontModalAtom, eventParticipantAtom, eventParticipantModalAtom } from "@/jotai/event/event.jotai";
+import { eventAtom, eventParticipanFunctiontModalAtom, eventParticipantAtom } from "@/jotai/event/event.jotai";
 import { loadingAtom } from "@/jotai/global/loading.jotai";
 import { modalDeleteAtom } from "@/jotai/global/modal.jotai";
 import { api } from "@/service/api.service";
@@ -16,10 +16,9 @@ import { configApi, resolveResponse } from "@/service/config.service";
 import { ResetEventParticipant, ResetParticipantFunction, TParticipantFunction } from "@/types/event/event.type";
 import { TDataTableColumns } from "@/types/global/data-table-card.type";
 import { ResetPagination, TPagination } from "@/types/global/pagination.type";
-import { TUser } from "@/types/master-data/user.type";
 import { permissionDelete, permissionUpdate } from "@/utils/permission.util";
 import { useAtom } from "jotai";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 const columns: TDataTableColumns[] = [

@@ -15,7 +15,7 @@ import { NotData } from "@/components/not-data/NotData";
 import { DataTableCard } from "@/components/data-table-card/DataTableCard";
 import { TDataTableColumns } from "@/types/global/data-table-card.type";
 import { UserModalCreate } from "./UserModalCreate";
-import { userAtom, userModalAtom, userModalUpdatePasswordAtom } from "@/jotai/master-data/user.jotai";
+import { modalCertificateManualAtom, userAtom, userModalAtom, userModalUpdatePasswordAtom } from "@/jotai/master-data/user.jotai";
 import { FaLock, FaUsers } from "react-icons/fa";
 import { getUserLogged } from "@/utils/auth.util";
 import { UserModalUpdatePassword } from "./UserModalUpdatePassword";
@@ -26,6 +26,8 @@ import { IconUpdatePassword } from "@/components/icons/master-data/IconUpdatePas
 import { IconForceApprove } from "@/components/icons/master-data/IconForceApprove";
 import { MdCancel, MdCheckCircle, MdOutlinePendingActions } from "react-icons/md";
 import { ResetUser, TUserLogged } from "@/types/master-data/user.type";
+import { IconCertificateManual } from "@/components/icons/master-data/IconCertificateManual";
+import { UserModalCertificateManual } from "./UserModalCertificateManual";
 
 const columns: TDataTableColumns[] = [
   {title: "Nome", label: "name", type: "text"},
@@ -47,6 +49,7 @@ export default function UserTable() {
   const [user, setUser] = useAtom(userAtom);
   const [modal, setModal] = useAtom(userModalAtom);
   const [modalStatusAccess, setModalStatusAccess] = useState(false);
+  const [__, setModalCertificateManual] = useAtom(modalCertificateManualAtom);
   const [modalUpdatePassword, setModalUpdatePassword] = useAtom(userModalUpdatePasswordAtom);
   const [currentTab, setCurrentTab] = useState("all");
   const [currentStatusAccess, setCurrentStatusAccess] = useState("");
@@ -192,6 +195,10 @@ export default function UserTable() {
       setModalStatusAccess(true);
       setUser({...obj, statusAccess: "Aprovado"})
     };
+
+    if(action == "certificate-manual") {
+      setModalCertificateManual(true);
+    }
   };
 
   const changePage = async (page: number) => {
@@ -246,6 +253,10 @@ export default function UserTable() {
         pagination.data.length > 0 ? 
         <DataTableCard heightContainer="max-h-[calc(100dvh-24rem)]" isActions={permissionUpdate(module, routine) || permissionDelete(module, routine)} pagination={pagination} columns={columns} changePage={changePage} actions={(obj) => (
           <>
+          {
+            permissionUpdate(module, routine) &&
+              <IconCertificateManual action="certificate-manual" obj={obj} getObj={getObj}/>
+            }
             {
               permissionUpdate(module, routine) && (obj.id == userLogged.id || userLogged.admin || userLogged.master) &&
               <IconUpdatePassword action="update-password" obj={obj} getObj={getObj}/>
@@ -280,6 +291,7 @@ export default function UserTable() {
       <ModalDelete confirm={destroy} isOpen={isOpen} closeModal={closeModal} title="Excluir Usuário" />
       <ModalConfirm size="lg" confirm={updateStatusAccess} isOpen={modalStatusAccess} closeModal={() => setModalStatusAccess(false)} title="Usuário" description={`Deseja ${user.statusAccess == "Aprovado" ? "Aprovar" : "Reprovar"} o acesso de ${user.name}?`} />
       <UserModalCreate />
+      <UserModalCertificateManual />
     </div>    
   );
 }

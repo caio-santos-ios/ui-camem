@@ -4,7 +4,7 @@ import Label from "@/components/form/Label";
 import Button from "@/components/ui/button/Button";
 import ModalV2 from "@/components/ui/modalV2"
 import { loadingAtom } from "@/jotai/global/loading.jotai";
-import { profileAtom, profileModalAtom } from "@/jotai/master-data/profile.jotai";
+import { profileModalAtom } from "@/jotai/master-data/profile.jotai";
 import { api } from "@/service/api.service";
 import { configApi, resolveResponse } from "@/service/config.service";
 import { ResetUser, TUser, TUserLogged } from "@/types/master-data/user.type";
@@ -20,7 +20,7 @@ export const ProfileModalCreate = () => {
 
     const userLogged: TUserLogged = getUserLogged();
 
-    const { register, handleSubmit, reset, setValue, watch, getValues, formState: { errors }} = useForm<TUser>({
+    const { register, reset, getValues } = useForm<TUser>({
         defaultValues: ResetUser
     });
 
