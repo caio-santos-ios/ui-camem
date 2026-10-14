@@ -75,6 +75,7 @@ export default function MyCertificateTable() {
                     functions={obj.functions}
                     keyCertificate={obj.keyCertificate}
                     html={obj.html}
+                    origin={obj.origin}
                   />
                 ) 
               })
