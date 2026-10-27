@@ -14,6 +14,7 @@ import { useForm } from "react-hook-form";
 import { EventParticipantCardPresence } from "./EventParticipantCardPresence";
 import Label from "@/components/form/Label";
 import { TCustomCertificate } from "@/types/custom-certificate/custom-certificate.type";
+import Pagination from "@/components/tables/Pagination";
 
 export const EventParticipantModalCreatePresence = () => {
     const [_, setLoading] = useAtom(loadingAtom);
@@ -94,6 +95,15 @@ export const EventParticipantModalCreatePresence = () => {
         }
     };
 
+    const changePage = async (page: number) => {
+        setPagination(prev => ({
+            ...prev,
+            currentPage: page
+        }));
+
+        await getAll(page);
+    };
+
     useEffect(() => {
         const initial = async () => {
             if (event.id && modal) {
@@ -115,6 +125,9 @@ export const EventParticipantModalCreatePresence = () => {
                                 return <EventParticipantCardPresence key={x.id} getValues={getValues} setValue={setValue} watch={watch} participant={x} open={openId === x.id} onToggle={() => setOpenId(openId === x.id ? null : x.id)} onSave={(obj) => confirm({ ...obj, functionId: x.functionId, id: x.id })} />
                             })
                         }
+                    </div>
+                    <div className="col-span-8">
+                        {pagination.totalCount > 0 && <Pagination currentPage={pagination.currentPage} totalCount={pagination.totalCount} totalData={pagination.data.length} totalPages={pagination.totalPages} onPageChange={changePage} />}
                     </div>
                     <div className="col-span-8 md:col-span-2">
                         <Label title="Pasta de Registro" />

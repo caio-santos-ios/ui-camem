@@ -58,8 +58,13 @@ export const EventParticipantModalCreate = () => {
         reset(ResetEventParticipant);
     };
 
+    const clearForm = () => {
+        reset({...ResetEventParticipant, eventId: event.id!});
+        setEventParticipant(ResetEventParticipant);
+    };
+
     const confirm = async (body: TEventParticipant) => {
-        setValue("eventId", event.id!);
+        body = {...body, eventId: event.id!};
         if(!body.id) {
             await create(body);
         } else {
@@ -277,7 +282,7 @@ export const EventParticipantModalCreate = () => {
                                     <input {...register("hours", { valueAsNumber: true })} type="number" placeholder="Horas" className="input-erp-primary input-erp-default no-spinner" />
                                 </div>
                                 <div className="col-span-8 md:col-span-2 flex items-end gap-4">
-                                    <Button className="" size="sm" variant="outline" onClick={() => {reset(ResetEventParticipant)}}>Cancelar</Button>
+                                    <Button className="" size="sm" variant="outline" onClick={clearForm}>Cancelar</Button>
                                     <Button className="" size="sm" variant="primary" onClick={() => confirm(getValues())}>Salvar</Button>
                                 </div>
                             </>

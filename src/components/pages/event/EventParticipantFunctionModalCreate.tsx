@@ -47,8 +47,15 @@ export const EventParticipantFunctionModalCreate = () => {
         reset(ResetEventParticipant);
     };
 
+    // Limpa o formulário mantendo o evento e zerando o id (senão o próximo "Salvar" edita a última função em vez de criar)
+    const clearForm = () => {
+        reset({...ResetParticipantFunction, eventId: event.id!});
+        setEventParticipant(ResetEventParticipant);
+    };
+
     const confirm = async (body: TParticipantFunction) => {
-        setValue("eventId", event.id!);
+        // Garante sempre o eventId do evento atual (o "Cancelar" limpava esse campo e a função era criada sem evento)
+        body = {...body, eventId: event.id!};
 
         if(!body.id) {
             await create(body);
@@ -66,7 +73,7 @@ export const EventParticipantFunctionModalCreate = () => {
             const {data} = await api.post(`/event-participant-functions`, form, configApi());
             resolveResponse({status: 201, message: data.result.message});
             await getAll(1);
-            setValue("name", "");
+            clearForm();
             setValue("hours", 0);
         } catch (error) {
             resolveResponse(error);
@@ -84,7 +91,7 @@ export const EventParticipantFunctionModalCreate = () => {
             const {data} = await api.put(`/event-participant-functions`, form, configApi());
             resolveResponse({status: 200, message: data.result.message});
             await getAll(1);
-            setValue("name", "");
+            clearForm();
             setValue("hours", 0);
         } catch (error) {
             resolveResponse(error);
@@ -188,7 +195,7 @@ export const EventParticipantFunctionModalCreate = () => {
                                     <input {...register("hours", { valueAsNumber: true })} type="number" placeholder="Horas" className="input-erp-primary input-erp-default no-spinner" />
                                 </div>
                                 <div className="col-span-8 md:col-span-2 flex items-end gap-4">
-                                    <Button className="" size="sm" variant="outline" onClick={() => {reset(ResetParticipantFunction)}}>Cancelar</Button>
+                                    <Button className="" size="sm" variant="outline" onClick={clearForm}>Cancelar</Button>
                                     <Button className="" size="sm" variant="primary" onClick={() => confirm(getValues())}>Salvar</Button>
                                 </div>
                             </>
